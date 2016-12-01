@@ -49,7 +49,7 @@ RSpec.describe User, type: :model do
 
     it 'should validate uniqueness' do
       create :user
-      should validate_uniqueness_of(:email).case_insensitive
+      should validate_uniqueness_of(:email)
     end
 
     it 'should not allow wrong email' do

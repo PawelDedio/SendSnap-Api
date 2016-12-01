@@ -9,8 +9,9 @@ gem 'puma', '~> 3.0'
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
+
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+ gem 'bcrypt', '~> 3.1.7'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -23,14 +24,10 @@ gem 'pg', '~> 0.18.2'
 # permission manager https://github.com/CanCanCommunity/cancancan/
 gem 'cancancan', '~> 1.10'
 
-#token authentication https://github.com/lynndylanhurley/devise_token_auth
-gem 'devise_token_auth', '~> 0.1.39'
-
-#gem required for devise_token_auth https://github.com/omniauth/omniauth/releases
-gem 'omniauth', '~> 1.3.1'
-
 #email validator https://github.com/balexand/email_validator
 gem 'email_validator', '~> 1.6.0'
+
+gem 'active_model_serializers', '0.9.3'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -40,7 +37,6 @@ group :development, :test do
   gem 'rspec-its', '~> 1.2.0'
   gem 'factory_girl_rails', '~> 4.7.0'
   gem 'faker', '~> 1.6.6'
-  gem 'shoulda-matchers', '~> 3.1.1'
 end
 
 group :development do

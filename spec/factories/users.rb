@@ -9,7 +9,7 @@ FactoryGirl.define do
     role 'user'
   end
 
-  factory :admin do
+  factory :admin, class: User do
     name {Faker::Name.name[0, USER_NAME_MAX_LENGTH]}
     password {Faker::Internet.password}
     password_confirmation {password}

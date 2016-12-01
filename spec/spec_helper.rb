@@ -17,14 +17,6 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'factory_girl_rails'
-require 'shoulda/matchers'
-::Shoulda::Matchers.configure do |config|
-  config.integrate do |with|
-    with.test_framework :rspec
-    with.library :active_record
-    with.library :active_model
-  end
-end
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -106,4 +98,12 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+end
+
+def sign_in_user
+  user = create(:admin)
+  user.save
+  user.reload
+  @request.headers[HEADER_AUTH_TOKEN] = 'Token token=' + user.auth_token
+  user
 end
