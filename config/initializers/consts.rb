@@ -7,4 +7,6 @@ USER_ROLE_USER = 'user'
 
 HEADER_AUTH_TOKEN = 'Authorization'
 
-AUTH_TOKEN_TIME_LENGTH = 1.months
+AUTH_TOKEN_TIME_LENGTH = 1.month.from_now
+
+COLLECTION_LABEL = 'collection'

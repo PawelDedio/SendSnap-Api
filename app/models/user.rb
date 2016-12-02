@@ -8,6 +8,15 @@ class User < ApplicationRecord
   validates :terms_accepted, presence: true, inclusion: {in: [false, true]}
   validates :role, presence: true, inclusion: {in: [USER_ROLE_ADMIN, USER_ROLE_USER]}
 
+  def sign_in
+    set_auth_token
+    extend_token_time
+  end
+
+  def sign_out
+    self.auth_token = nil
+    self.token_expire_time = nil
+  end
 
   def set_auth_token
     self.auth_token = SecureRandom.uuid.gsub(/\-/,'')
@@ -15,7 +24,6 @@ class User < ApplicationRecord
   end
 
   def extend_token_time
-    self.token_expire_time = Date.today if self.token_expire_time.nil?
-    self.token_expire_time += AUTH_TOKEN_TIME_LENGTH
+    self.token_expire_time = AUTH_TOKEN_TIME_LENGTH
   end
 end

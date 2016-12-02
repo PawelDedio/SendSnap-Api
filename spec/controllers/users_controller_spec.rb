@@ -11,7 +11,30 @@ RSpec.describe UsersController, type: :controller do
     }
   end
 
-  describe 'GET show' do
+  describe 'GET #index' do
+    it 'should allow access to user list for admin role' do
+      user1 = sign_in_user
+      user2 = create :user
+
+      get :index
+
+      parsed_response = JSON.parse(response.body)
+
+      except(response).to have_http_status :success
+      except(parsed_response[COLLECTION_LABEL].count).to eql 2
+    end
+
+    it 'should not allow access for not admin role' do
+      user1 = sign_in_user
+      user2 = create :user
+
+      get :index
+
+      except(response).to have_http_status :forbidden
+    end
+  end
+
+  describe 'GET #show' do
     it 'should allow only authenticated user' do
       user = create :user
       get :show, params: {id: user.id}
@@ -45,7 +68,7 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  describe 'POST create' do
+  describe 'POST #create' do
     it 'should create user with correct data' do
       user = build :user
       password = {password: 'qqqqqqqq', password_confirmation: 'qqqqqqqq'}
@@ -73,6 +96,12 @@ RSpec.describe UsersController, type: :controller do
       expect(response).to have_http_status :created
       parsed_response = JSON.parse(response.body)
       expect(parsed_response['role']).to eql USER_ROLE_USER
+    end
+  end
+
+  describe 'PUT #update' do
+    it 'should return success for correct data' do
+      
     end
   end
 end

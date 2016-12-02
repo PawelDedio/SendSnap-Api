@@ -7,17 +7,19 @@ class SessionsController < ApplicationController
     name = create_params[:name]
     password = create_params[:password]
 
-    if email.nil? or password.nil?
+    if (email.nil? and name.nil?) or password.nil?
       render status: :unauthorized
       return
     end
 
-    user = User.find_by_name_or_email(name, email)
+    user = User.where(name: name).or(User.where(email: email)).first
 
     if user.present? && user.authenticate(password)
-      user.extend_token_time
+      user.sign_in
 
       render json: user, serializer: UserForSessionSerializer, status: :ok
+    else
+      render status: :unauthorized
     end
   end
 
