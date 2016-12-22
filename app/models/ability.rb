@@ -7,6 +7,7 @@ class Ability
       can :manage, :all
     else
       can :manage, User, id: user.id
+      cannot :index, User
     end
     # Define abilities for the passed in user here. For example:
     #

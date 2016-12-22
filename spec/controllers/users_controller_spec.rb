@@ -20,17 +20,24 @@ RSpec.describe UsersController, type: :controller do
 
       parsed_response = JSON.parse(response.body)
 
-      except(response).to have_http_status :success
-      except(parsed_response[COLLECTION_LABEL].count).to eql 2
+      expect(response).to have_http_status :success
+      expect(parsed_response[COLLECTION_LABEL].count.to_i).to eql 2
     end
 
     it 'should not allow access for not admin role' do
-      user1 = sign_in_user
-      user2 = create :user
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
 
       get :index
 
-      except(response).to have_http_status :forbidden
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow access for not authorized user' do
+      get :index
+
+      expect(response).to have_http_status :unauthorized
     end
   end
 
@@ -101,7 +108,80 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'PUT #update' do
     it 'should return success for correct data' do
-      
+      user = sign_in_user
+      name = user.name + 'new name'
+
+      put :update, params: {id: user.id, display_name: name}
+      expect(response).to have_http_status :success
+
+      user.reload
+      expect(user.display_name).to eql name
+    end
+
+    it 'should not allow to edit another account for not admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      new_user = create :user
+
+      put :update, params: {id: new_user.id, display_name: 'new name'}
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should allow to edit another account for admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      new_user = create :user
+
+      put :update, params: {id: new_user.id, display_name: 'new name'}
+      expect(response).to have_http_status :success
+    end
+
+    it 'should not allow to edit all parameters for not admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      old_name = user.name
+      old_email = user.email
+      old_terms_accepted = user.terms_accepted
+      put :update, params: {id: user.id, name: 'new name', email: 'new email', terms_accepted: !user.terms_accepted}
+      expect(response).to have_http_status :success
+
+      user.reload
+
+      expect(old_name).to eql user.name
+      expect(old_email).to eql user.email
+      expect(old_terms_accepted).to eql user.terms_accepted
+    end
+
+    it 'should allow all parameters for admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      old_name = user.name
+      old_email = user.email
+      put :update, params: {id: user.id, name: 'new name', email: 'email@email.com'}
+
+      user.reload
+
+      expect(old_name).to_not eql user.name
+      expect(old_email).to_not eql user.email
+    end
+
+    it 'should not allow to update data for not authorized user' do
+      user = create :user
+      name = user.name + 'new name'
+
+      put :update, params: {id: user.id, display_name: name}
+      expect(response).to have_http_status :unauthorized
+
+      user.reload
+      expect(user.display_name).to_not eql name
     end
   end
 end

@@ -2,6 +2,9 @@ class ApplicationController < ActionController::API
   include ActionController::Serialization
   include CanCan::ControllerAdditions
   include ActionController::HttpAuthentication::Token::ControllerMethods
+  include SortingHelper
+  include PaginationHelper
+  include SearchHelper
 
   def authenticate_user
     authenticate_or_request_with_http_token do |token, options|
