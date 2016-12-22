@@ -3,11 +3,21 @@ require 'rails_helper'
 RSpec.describe UsersController, type: :controller do
   describe 'routes test', type: :routing do
     it {
+      should route(:get, 'users').to(action: :index)
+    }
+
+    it {
       uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
       should route(:get, "users/#{uuid}").to(action: :show, id: uuid)
     }
+
     it {
       should route(:post, 'users').to(action: :create)
+    }
+
+    it {
+      uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
+      should route(:delete, "users/#{uuid}").to(action: :destroy, id: uuid)
     }
   end
 
@@ -38,6 +48,43 @@ RSpec.describe UsersController, type: :controller do
       get :index
 
       expect(response).to have_http_status :unauthorized
+    end
+
+    it 'array should be in collection label' do
+      user1 = sign_in_user
+      user2 = create :user
+
+      get :index
+
+      parsed_response = JSON.parse(response.body)
+
+      expect(parsed_response[COLLECTION_LABEL]).to be_a Array
+    end
+
+    it 'should not show deleted user' do
+      user1 = sign_in_user
+      user2 = create :user
+      user2.delete
+
+      get :index
+
+      parsed_response = JSON.parse(response.body)
+
+      expect(response).to have_http_status :success
+      expect(parsed_response[COLLECTION_LABEL].count.to_i).to eql 1
+    end
+
+    it 'should not show blocked user' do
+      user1 = sign_in_user
+      user2 = create :user
+      user2.block
+
+      get :index
+
+      parsed_response = JSON.parse(response.body)
+
+      expect(response).to have_http_status :success
+      expect(parsed_response[COLLECTION_LABEL].count.to_i).to eql 1
     end
   end
 
@@ -72,6 +119,18 @@ RSpec.describe UsersController, type: :controller do
       expect(response).to have_http_status :ok
       parsed_response = JSON.parse(response.body)
       expect(parsed_response['id']).to eql user.id
+    end
+
+    it 'should return not found for wrong id' do
+      #TODO: implementation
+    end
+
+    it 'should return not found for deleted user' do
+
+    end
+
+    it 'should return not found for blocked user' do
+
     end
   end
 
@@ -182,6 +241,55 @@ RSpec.describe UsersController, type: :controller do
 
       user.reload
       expect(user.display_name).to_not eql name
+    end
+  end
+
+  describe 'delete #destroy' do
+    it 'user should can delete own account' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      delete :destroy, params: {id: user.id}
+      expect(response).to have_http_status :success
+    end
+
+    it 'should allow to delete another account for admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      another_user = create :user
+
+      delete :destroy, params: {id: another_user.id}
+      expect(response).to have_http_status :success
+    end
+
+    it 'should not allow to delete another user for user role' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      another_user = create :user
+
+      delete :destroy, params: {id: another_user.id}
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow to delete for not authorized user' do
+      user = create :user
+
+      delete :destroy, params: {id: user.id}
+
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'should return 404 for wrong id' do
+      user = sign_in_user
+
+      delete :destroy, params: {id: user.id + 'wrongid'}
+
+      expect(response).to have_http_status :not_found
     end
   end
 end

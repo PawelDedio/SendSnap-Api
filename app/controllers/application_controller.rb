@@ -20,15 +20,15 @@ class ApplicationController < ActionController::API
     end
   end
 
-  def default_serializer_options
-    {root: false}
-  end
-
   def current_user
     @current_user
   end
 
   rescue_from CanCan::AccessDenied do |exception|
     render status: :forbidden
+  end
+
+  rescue_from ActiveRecord::RecordNotFound do
+    render status: :not_found
   end
 end

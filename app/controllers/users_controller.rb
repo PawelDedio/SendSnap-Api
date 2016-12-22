@@ -45,6 +45,14 @@ class UsersController < ApplicationController
     end
   end
 
+  def destroy
+    if @user.delete
+      render status: :no_content
+    else
+      render json: @user.errors
+    end
+  end
+
 
   private
   def create_params
