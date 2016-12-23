@@ -27,5 +27,6 @@ module SendSnapApi
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     ActiveModel::Serializer.root = false
+    config.active_record.primary_key = :uuid
   end
 end

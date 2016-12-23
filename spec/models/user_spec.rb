@@ -80,7 +80,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe 'validates password' do
+  describe 'validate password' do
     it 'should validate presence of' do
       should validate_presence_of(:password)
     end

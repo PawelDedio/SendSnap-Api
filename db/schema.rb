@@ -10,11 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161223102627) do
+ActiveRecord::Schema.define(version: 20161223105305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
+
+  create_table "friend_invitations", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.uuid     "author_id",    null: false
+    t.uuid     "recipient_id", null: false
+    t.datetime "accepted_at"
+    t.datetime "rejected_at"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["author_id"], name: "index_friend_invitations_on_author_id", using: :btree
+    t.index ["recipient_id"], name: "index_friend_invitations_on_recipient_id", using: :btree
+  end
 
   create_table "users", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string   "name"
