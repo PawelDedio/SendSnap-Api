@@ -64,7 +64,7 @@ RSpec.describe UsersController, type: :controller do
     it 'should not show deleted user' do
       user1 = sign_in_user
       user2 = create :user
-      user2.delete
+      user2.safe_delete
 
       get :index
 
@@ -85,6 +85,24 @@ RSpec.describe UsersController, type: :controller do
 
       expect(response).to have_http_status :success
       expect(parsed_response[COLLECTION_LABEL].count.to_i).to eql 1
+    end
+
+    it 'should return unauthorized for blocked user' do
+      user = sign_in_user
+      user.block
+
+      get :index
+
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'should return unauthorized for deleted user' do
+      user = sign_in_user
+      user.safe_delete
+
+      get :index
+
+      expect(response).to have_http_status :unauthorized
     end
   end
 
@@ -122,15 +140,40 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it 'should return not found for wrong id' do
-      #TODO: implementation
+      sign_in_user
+      user = create :user
+
+      get :show, params: {id: user.id + 'wrong id'}
+
+      expect(response).to have_http_status :not_found
     end
 
     it 'should return not found for deleted user' do
+      sign_in_user
 
+      user = create :user
+      user.safe_delete
+
+      get :show, params: {id: user.id}
+      expect(response).to have_http_status :not_found
     end
 
     it 'should return not found for blocked user' do
+      sign_in_user
 
+      user = create :user
+      user.block
+
+      get :show, params: {id: user.id}
+      expect(response).to have_http_status :not_found
+    end
+
+    it 'should not allow for deleted user' do
+      user = sign_in_user
+      user.delete
+
+      get :show, params: {id: user.id}
+      expect(response).to have_http_status :unauthorized
     end
   end
 
@@ -242,6 +285,24 @@ RSpec.describe UsersController, type: :controller do
       user.reload
       expect(user.display_name).to_not eql name
     end
+
+    it 'should not allow to update data for deleted user' do
+      user = sign_in_user
+      name = user.name + 'new name'
+      user.delete
+
+      put :update, params: {id: user.id, display_name: name}
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'should not allow to update data for blocked user' do
+      user = sign_in_user
+      name = user.name + 'new name'
+      user.block
+
+      put :update, params: {id: user.id, display_name: name}
+      expect(response).to have_http_status :unauthorized
+    end
   end
 
   describe 'delete #destroy' do
@@ -284,10 +345,88 @@ RSpec.describe UsersController, type: :controller do
       expect(response).to have_http_status :unauthorized
     end
 
+    it 'should not allow to delete for deleted user' do
+      user = sign_in_user
+      user.delete
+
+      delete :destroy, params: {id: user.id}
+
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'should not allow to delete for blocked user' do
+      user = sign_in_user
+      user.block
+
+      delete :destroy, params: {id: user.id}
+
+      expect(response).to have_http_status :unauthorized
+    end
+
     it 'should return 404 for wrong id' do
       user = sign_in_user
 
       delete :destroy, params: {id: user.id + 'wrongid'}
+
+      expect(response).to have_http_status :not_found
+    end
+  end
+
+  describe 'put #block' do
+    it 'should allow for admin role' do
+      sign_in_user
+      another_user = create :user
+
+      put :block, params: {id: another_user.id}
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should not allow for not admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      another_user = create :user
+
+      put :block, params: {id: another_user.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow for unauthorized user' do
+      user = create :user
+
+      put :block, params: {id: user.id}
+
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'should return not found for wrong user id' do
+      sign_in_user
+      another_user = create :user
+
+      put :block, params: {id: another_user.id + 'wrongid'}
+
+      expect(response).to have_http_status :not_found
+    end
+
+    it 'should return not found for deleted user' do
+      sign_in_user
+      another_user = create :user
+      another_user.delete
+
+      put :block, params: {id: another_user.id}
+
+      expect(response).to have_http_status :not_found
+    end
+
+    it 'should return not found for blocked user' do
+      sign_in_user
+      another_user = create :user
+      another_user.delete
+
+      put :block, params: {id: another_user.id}
 
       expect(response).to have_http_status :not_found
     end

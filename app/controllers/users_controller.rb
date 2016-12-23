@@ -46,7 +46,15 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    if @user.delete
+    if @user.safe_delete
+      render status: :no_content
+    else
+      render json: @user.errors
+    end
+  end
+
+  def block
+    if @user.block
       render status: :no_content
     else
       render json: @user.errors

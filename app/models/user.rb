@@ -23,6 +23,8 @@ class User < ApplicationRecord
 
   default_scope {where(deleted_at: nil, blocked_at: nil)}
 
+  has_and_belongs_to_many :friends, class_name: 'User', foreign_key: :friend_id
+
   validates :name, presence: true, uniqueness: true, length: {minimum: USER_NAME_MIN_LENGTH, maximum: USER_NAME_MAX_LENGTH}
   validates :display_name, allow_blank: true, length: {minimum: USER_DISPLAY_NAME_MIN_LENGTH, maximum: USER_DISPLAY_NAME_MAX_LENGTH}
   validates :email, presence: true, uniqueness: true, email: {strict_mode: true}
@@ -53,7 +55,7 @@ class User < ApplicationRecord
     self.save
   end
 
-  def delete
+  def safe_delete
     self.deleted_at = Date.today
     self.save
   end

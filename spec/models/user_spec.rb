@@ -128,4 +128,18 @@ RSpec.describe User, type: :model do
       expect(res).to be false
     end
   end
+
+  it 'should allow to associate friends' do
+    user = build :user
+
+    first_friend = create :user
+    second_friend = create :user
+
+    ids = [first_friend.id, second_friend.id]
+
+    user.friend_ids = ids
+    user.save
+
+    expect(user.friends.count).to eql 2
+  end
 end
