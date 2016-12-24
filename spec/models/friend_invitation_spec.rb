@@ -46,5 +46,41 @@ RSpec.describe FriendInvitation, type: :model do
 
       expect(res).to be false
     end
+
+    it 'should not allow to save duplicated recipient_id for the same author_id' do
+      first = create :friend_invitation
+      second = build :friend_invitation
+      second.author_id = first.author.id
+      second.recipient_id = first.recipient_id
+
+      res = second.save
+
+      expect(res).to be false
+    end
+
+    it 'should  allow to save duplicated recipient_id for not the same author_id' do
+      first = create :friend_invitation
+      second = build :friend_invitation
+      second.recipient_id = first.recipient_id
+
+      res = second.save
+
+      expect(res).to be true
+    end
+
+    it 'should not allow to save recipient which is user friend' do
+      user = create :user
+      second = create :user
+      second.friends << user
+      second.save
+
+      invitation = build :friend_invitation
+      invitation.author_id = user.id
+      invitation.recipient_id = second.id
+
+      res = invitation.save
+
+      expect(res).to be false
+    end
   end
 end

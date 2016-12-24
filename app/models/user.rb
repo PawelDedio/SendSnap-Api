@@ -64,4 +64,8 @@ class User < ApplicationRecord
     self.deleted_at = Date.today
     self.save
   end
+
+  def friends
+    User.where(id: self.id).eager_load(:)
+  end
 end

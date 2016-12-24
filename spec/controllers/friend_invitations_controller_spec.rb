@@ -277,4 +277,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
       expect(response).to have_http_status :unauthorized
     end
   end
+
+  describe ''
 end

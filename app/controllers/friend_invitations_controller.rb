@@ -1,6 +1,6 @@
 class FriendInvitationsController < ApplicationController
   before_action :authenticate_user
-  load_and_authorize_resource class: 'FriendInvitation'
+  load_and_authorize_resource class: 'FriendInvitation', except: :create
 
   def index
     setup_pagination(page: params[:page], page_size: params[:page_size])
@@ -45,6 +45,7 @@ class FriendInvitationsController < ApplicationController
   end
 
   def create
+    @friend_invitation = FriendInvitation.new create_params
     @friend_invitation.author_id = current_user.id
     if @friend_invitation.save
       render json: @friend_invitation,
