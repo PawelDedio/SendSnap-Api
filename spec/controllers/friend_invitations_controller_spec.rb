@@ -17,6 +17,16 @@ RSpec.describe FriendInvitationsController, type: :controller do
     it {
       should route(:post, 'friend_invitations').to(action: :create)
     }
+
+    it {
+      uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
+      should route(:put, "friend_invitations/#{uuid}/accept").to(action: :accept, id: uuid)
+    }
+
+    it {
+      uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
+      should route(:put, "friend_invitations/#{uuid}/reject").to(action: :reject, id: uuid)
+    }
   end
 
   describe 'GET #index' do
@@ -171,6 +181,98 @@ RSpec.describe FriendInvitationsController, type: :controller do
       invitation = build :friend_invitation
 
       post :create, params: invitation.attributes
+
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'should return bad request for wrong data' do
+      sign_in_user
+
+      invitation = build :friend_invitation
+      invitation.recipient_id = nil
+
+      post :create, params: invitation.attributes
+
+      expect(response).to have_http_status :bad_request
+    end
+
+    it 'should not allow to make duplications' do
+      sign_in_user
+
+      invitation = build :friend_invitation
+
+      post :create, params: invitation.attributes
+
+      expect(response).to have_http_status :success
+
+      post :create, params: invitation.attributes
+
+      expect(response).to have_http_status :bad_request
+    end
+  end
+
+  describe 'put #accept' do
+    it 'should allow to accept invitation where user is recipient' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.recipient_id = user.id
+      invitation.save
+
+      put :accept, params: {id: invitation.id}
+      invitation.reload
+
+      expect(response).to have_http_status :success
+      expect(invitation.accepted_at).to_not be nil
+    end
+
+    it 'should not allow to accept invitation of another user for user role' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = create :friend_invitation
+
+      put :accept, params: {id: invitation.id}
+      invitation.reload
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should allow to accept invitation of another user for admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      invitation = create :friend_invitation
+
+      put :accept, params: {id: invitation.id}
+      invitation.reload
+
+      expect(response).to have_http_status :success
+      expect(invitation.accepted_at).to_not be nil
+    end
+
+    it 'should not allow to accept invitation where user is author' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.author_id = user.id
+      invitation.save
+
+      put :accept, params: {id: invitation.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow for unauthorized user' do
+      invitation = create :friend_invitation
+
+      put :accept, params: {id: invitation.id}
 
       expect(response).to have_http_status :unauthorized
     end

@@ -9,6 +9,10 @@ class Ability
       can :manage, User, id: user.id
       can :manage, FriendInvitation, author_id: user.id
       can :manage, FriendInvitation, recipient_id: user.id
+      can :accept, FriendInvitation, recipient_id: user.id
+      cannot :accept, FriendInvitation do |invitation|
+        !invitation.recipient_id.eql? user.id
+      end
       cannot :index, FriendInvitation
       cannot :index, User
     end

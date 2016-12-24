@@ -23,8 +23,7 @@ ActiveRecord::Schema.define(version: 20161223105305) do
     t.datetime "rejected_at"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
-    t.index ["author_id"], name: "index_friend_invitations_on_author_id", using: :btree
-    t.index ["recipient_id"], name: "index_friend_invitations_on_recipient_id", using: :btree
+    t.index ["author_id", "recipient_id"], name: "index_friend_invitations_on_author_id_and_recipient_id", unique: true, using: :btree
   end
 
   create_table "users", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|

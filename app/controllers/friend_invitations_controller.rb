@@ -56,6 +56,19 @@ class FriendInvitationsController < ApplicationController
     end
   end
 
+  def accept
+    if @friend_invitation.accept
+      render status: :no_content
+    else
+      render json: @friend_invitation.errors,
+             status: :bad_request
+    end
+  end
+
+  def reject
+
+  end
+
 
   private
   def create_params

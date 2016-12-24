@@ -12,8 +12,7 @@
 #
 # Indexes
 #
-#  index_friend_invitations_on_author_id     (author_id)
-#  index_friend_invitations_on_recipient_id  (recipient_id)
+#  index_friend_invitations_on_author_id_and_recipient_id  (author_id,recipient_id) UNIQUE
 #
 
 class FriendInvitation < ApplicationRecord
@@ -22,5 +21,11 @@ class FriendInvitation < ApplicationRecord
   belongs_to :recipient, class_name: 'User'
 
   validates :author_id, presence: true, user: true
-  validates :recipient_id, presence: true, user: true
+  validates :recipient_id, presence: true, user: true, not_self_id: true, uniqueness: {scope: :author_id}
+
+
+  def accept
+    self.accepted_at = Date.today
+    self.save
+  end
 end

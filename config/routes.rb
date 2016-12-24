@@ -8,5 +8,7 @@ Rails.application.routes.draw do
 
   get 'friend_invitations/from_me' => 'friend_invitations#from_me'
   get 'friend_invitations/to_me' => 'friend_invitations#to_me'
+  put 'friend_invitations/:id/accept' => 'friend_invitations#accept'
+  put 'friend_invitations/:id/reject' => 'friend_invitations#reject'
   resources :friend_invitations
 end

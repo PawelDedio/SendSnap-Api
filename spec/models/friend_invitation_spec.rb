@@ -31,6 +31,15 @@ RSpec.describe FriendInvitation, type: :model do
 
     it 'should not allow to save wrong id' do
       invitation = build :friend_invitation
+      invitation.recipient_id = invitation.author_id
+
+      res = invitation.save
+
+      expect(res).to be false
+    end
+
+    it 'should not allow to save the same id as author_id' do
+      invitation = build :friend_invitation
       invitation.recipient_id = 'wrong id'
 
       res = invitation.save
