@@ -27,6 +27,11 @@ RSpec.describe FriendInvitationsController, type: :controller do
       uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
       should route(:put, "friend_invitations/#{uuid}/reject").to(action: :reject, id: uuid)
     }
+
+    it {
+      uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
+      should route(:delete, "friend_invitations/#{uuid}/cancel").to(action: :cancel, id: uuid)
+    }
   end
 
   describe 'GET #index' do
@@ -209,6 +214,38 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
       expect(response).to have_http_status :bad_request
     end
+
+    it 'should allow to create duplication when previous invitation was canceled' do
+      sign_in_user
+
+      invitation = build :friend_invitation
+
+      post :create, params: invitation.attributes
+
+      expect(response).to have_http_status :success
+      res = FriendInvitation.all.first.cancel
+      expect(res).to be true
+
+      post :create, params: invitation.attributes
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should allow to create duplication when previous invitation was rejected' do
+      sign_in_user
+
+      invitation = build :friend_invitation
+
+      post :create, params: invitation.attributes
+
+      expect(response).to have_http_status :success
+      res = FriendInvitation.all.first.reject
+      expect(res).to be true
+
+      post :create, params: invitation.attributes
+
+      expect(response).to have_http_status :success
+    end
   end
 
   describe 'put #accept' do
@@ -276,7 +313,286 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
       expect(response).to have_http_status :unauthorized
     end
+
+    it 'should create users association after success' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.recipient_id = user.id
+      invitation.save
+
+      expect(user.all_friends.size).to eq 0
+
+      put :accept, params: {id: invitation.id}
+      invitation.reload
+
+      expect(response).to have_http_status :success
+      expect(invitation.author.all_friends.size).to eq 1
+      expect(invitation.recipient.all_friends.size).to eq 1
+    end
+
+    it 'should not allow to accept rejected invitation' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.recipient_id = user.id
+      invitation.rejected_at = Date.today
+      invitation.save
+
+      put :accept, params: {id: invitation.id}
+
+      expect(response).to have_http_status :not_found
+    end
+
+    it 'should not allow to accept accepted invitation' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.recipient_id = user.id
+      invitation.accepted_at = Date.today
+      invitation.save
+
+      put :accept, params: {id: invitation.id}
+
+      expect(response).to have_http_status :not_found
+    end
+
+    it 'should not allow to accept canceled invitation' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.recipient_id = user.id
+      invitation.canceled_at = Date.today
+      invitation.save
+
+      put :accept, params: {id: invitation.id}
+
+      expect(response).to have_http_status :not_found
+    end
   end
 
-  describe ''
+  describe 'put #reject' do
+    it 'should allow reject invitation where user is recipient' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.recipient_id = user.id
+      invitation.save
+
+      put :reject, params: {id: invitation.id}
+      invitation.reload
+
+      expect(response).to have_http_status :success
+      expect(invitation.rejected_at).to_not be nil
+    end
+
+    it 'should not allow reject invitation where user is author' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.author_id = user.id
+      invitation.save
+
+      put :reject, params: {id: invitation.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should allow to reject another user invitation for admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      invitation = create :friend_invitation
+
+      put :reject, params: {id: invitation.id}
+      invitation.reload
+
+      expect(response).to have_http_status :success
+      expect(invitation.rejected_at).to_not be nil
+    end
+
+    it 'should not allow to reject another user invitation for not admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = create :friend_invitation
+
+      put :reject, params: {id: invitation.id}
+      invitation.reload
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow to reject accepted invitation' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.accepted_at = Date.today
+      invitation.save
+
+      put :reject, params: {id: invitation.id}
+
+      expect(response).to have_http_status :not_found
+    end
+
+    it 'should not allow to reject rejected invitation' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.rejected_at = Date.today
+      invitation.save
+
+      put :reject, params: {id: invitation.id}
+
+      expect(response).to have_http_status :not_found
+    end
+
+    it 'should not allow to reject canceled invitation' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.canceled_at = Date.today
+      invitation.save
+
+      put :reject, params: {id: invitation.id}
+
+      expect(response).to have_http_status :not_found
+    end
+
+    it 'should not allow for unauthorized user' do
+      invitation = create :friend_invitation
+
+      put :reject, params: {id: invitation.id}
+
+      expect(response).to have_http_status :unauthorized
+    end
+  end
+
+  describe 'delete #cancel' do
+    it 'should allow to cancel invitation where user is author' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.author_id = user.id
+      invitation.save
+
+      delete :cancel, params: {id: invitation.id}
+      invitation.reload
+
+      expect(response).to have_http_status :success
+      expect(invitation.canceled_at).to_not be nil
+    end
+
+    it 'should not allow to cancel invitation where user is recipient' do
+      user = sign_in_user
+      user.role = USER_ROLE_USER
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.recipient_id = user.id
+      invitation.save
+
+      delete :cancel, params: {id: invitation.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should allow to cancel another user invitation for admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      invitation = create :friend_invitation
+
+      delete :cancel, params: {id: invitation.id}
+      invitation.reload
+
+      expect(response).to have_http_status :success
+      expect(invitation.canceled_at).to_not be nil
+    end
+
+    it 'should allow to cancel another user invitation for admin role' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      invitation = create :friend_invitation
+
+      delete :cancel, params: {id: invitation.id}
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should not allow for unauthorized user' do
+      invitation = create :friend_invitation
+
+      delete :cancel, params: {id: invitation.id}
+
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'should not allow to cancel accepted invitation' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.accepted_at = Date.today
+      invitation.save
+
+      delete :cancel, params: {id: invitation.id}
+
+      expect(response).to have_http_status :not_found
+    end
+
+    it 'should not allow to cancel rejected invitation' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.rejected_at = Date.today
+      invitation.save
+
+      delete :cancel, params: {id: invitation.id}
+
+      expect(response).to have_http_status :not_found
+    end
+
+    it 'should not allow to cancel canceled invitation' do
+      user = sign_in_user
+      user.role = USER_ROLE_ADMIN
+      user.save
+
+      invitation = build :friend_invitation
+      invitation.canceled_at = Date.today
+      invitation.save
+
+      delete :cancel, params: {id: invitation.id}
+
+      expect(response).to have_http_status :not_found
+    end
+  end
 end

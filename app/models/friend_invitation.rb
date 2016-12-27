@@ -9,6 +9,7 @@
 #  rejected_at  :datetime
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  canceled_at  :datetime
 #
 # Indexes
 #
@@ -21,11 +22,24 @@ class FriendInvitation < ApplicationRecord
   belongs_to :recipient, class_name: 'User'
 
   validates :author_id, presence: true, user: true
-  validates :recipient_id, presence: true, user: true, recipient_id: true, uniqueness: {scope: :author_id}
+  validates :recipient_id, presence: true, user: true, recipient_id: true,
+            uniqueness: {scope: :author_id, conditions:  -> {where(canceled_at: nil, rejected_at: nil)}}
+
+  default_scope {where(accepted_at: nil, rejected_at: nil, canceled_at: nil)}
 
 
   def accept
     self.accepted_at = Date.today
+    self.save
+  end
+
+  def reject
+    self.rejected_at = Date.today
+    self.save
+  end
+
+  def cancel
+    self.canceled_at = Date.today
     self.save
   end
 end

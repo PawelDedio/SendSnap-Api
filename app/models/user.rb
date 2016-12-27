@@ -66,7 +66,7 @@ class User < ApplicationRecord
   end
 
   def all_friends
-    User.joins("RIGHT JOIN users_users ON (users.id = users_users.user_id OR users.id = users_users.friend_id)")
+    User.joins("INNER JOIN users_users ON (users.id = users_users.user_id OR users.id = users_users.friend_id)")
         .where("users.id != '#{self.id}'").distinct
   end
 end

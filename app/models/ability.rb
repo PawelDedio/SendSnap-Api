@@ -13,6 +13,14 @@ class Ability
       cannot :accept, FriendInvitation do |invitation|
         !invitation.recipient_id.eql? user.id
       end
+      can :reject, FriendInvitation, recipient_id: user.id
+      cannot :reject, FriendInvitation do |invitation|
+        !invitation.recipient_id.eql? user.id
+      end
+      can :cancel, FriendInvitation, author_id: user.id
+      cannot :cancel, FriendInvitation do |invitation|
+        !invitation.author_id.eql? user.id
+      end
       cannot :index, FriendInvitation
       cannot :index, User
     end

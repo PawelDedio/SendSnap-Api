@@ -58,7 +58,26 @@ class FriendInvitationsController < ApplicationController
   end
 
   def accept
-    if @friend_invitation.accept
+    ActiveRecord::Base.transaction do
+      res = @friend_invitation.accept
+      author = @friend_invitation.author
+      author.friends << @friend_invitation.recipient
+      res &= author.save
+
+      if res
+        render status: :no_content
+      else
+        render json: @friend_invitation.errors,
+               status: :bad_request
+
+        raise ActiveRecord::Rollback
+      end
+    end
+
+  end
+
+  def reject
+    if @friend_invitation.reject
       render status: :no_content
     else
       render json: @friend_invitation.errors,
@@ -66,8 +85,13 @@ class FriendInvitationsController < ApplicationController
     end
   end
 
-  def reject
-
+  def cancel
+    if @friend_invitation.cancel
+      render status: :no_content
+    else
+      render json: @friend_invitation.errors,
+             status: :bad_request
+    end
   end
 
 
