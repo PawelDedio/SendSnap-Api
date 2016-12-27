@@ -65,7 +65,8 @@ class User < ApplicationRecord
     self.save
   end
 
-  def friends
-    User.where(id: self.id).eager_load(:)
+  def all_friends
+    User.joins("RIGHT JOIN users_users ON (users.id = users_users.user_id OR users.id = users_users.friend_id)")
+        .where("users.id != '#{self.id}'").distinct
   end
 end

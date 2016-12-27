@@ -10,6 +10,12 @@ class RecipientIdValidator < ActiveModel::EachValidator
     end
 
     user = record.author
-    user.present? && !user.friend_ids.include?(value)
+    if user.present?
+      friend_ids = user.all_friends.map do |friend|
+        friend.id
+      end
+      return !friend_ids.include?(value)
+    end
+    false
   end
 end
