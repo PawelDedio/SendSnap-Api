@@ -1,6 +1,6 @@
 class CreateUsersUsersJoinTable < ActiveRecord::Migration[5.0]
   def up
-    create_table :users_users do |t|
+    create_table :users_users, id: :uuid do |t|
       t.uuid :user_id, null: false
       t.uuid :friend_id, null: false
       t.timestamps
