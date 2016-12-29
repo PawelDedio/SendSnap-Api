@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161227112847) do
+ActiveRecord::Schema.define(version: 20161228094850) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,16 @@ ActiveRecord::Schema.define(version: 20161227112847) do
     t.datetime "updated_at",   null: false
     t.datetime "canceled_at"
     t.index ["author_id", "recipient_id"], name: "index_friend_invitations_on_author_id_and_recipient_id", using: :btree
+  end
+
+  create_table "snaps", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.uuid     "user_id",    null: false
+    t.string   "snap_file",  null: false
+    t.string   "snap_type",  null: false
+    t.integer  "duration",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_snaps_on_user_id", using: :btree
   end
 
   create_table "users", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
