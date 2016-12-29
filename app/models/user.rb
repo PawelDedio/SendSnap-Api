@@ -30,6 +30,9 @@ class User < ApplicationRecord
 
   has_and_belongs_to_many :friends, class_name: 'User', foreign_key: :friend_id
 
+  has_many :user_snaps
+  has_many :snaps, through: :user_snaps
+
   validates :name, presence: true, uniqueness: true, length: {minimum: USER_NAME_MIN_LENGTH, maximum: USER_NAME_MAX_LENGTH}
   validates :display_name, allow_blank: true, length: {minimum: USER_DISPLAY_NAME_MIN_LENGTH, maximum: USER_DISPLAY_NAME_MAX_LENGTH}
   validates :email, presence: true, uniqueness: true, email: {strict_mode: true}

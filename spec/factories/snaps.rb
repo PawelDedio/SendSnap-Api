@@ -1,16 +1,17 @@
 FactoryGirl.define do
   factory :photo_snap, class: :snap do
     user_id { (create :user).id }
-    #snap_file { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'attachments', 'snap.jpg')) }
+    file_type { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'attachments', 'snap.jpg')) }
     duration 10
-    snap_type SNAP_TYPE_PHOTO
-    snap_file ActionDispatch::Http::UploadedFile.new({filename: 'snap.jpg', tempfile: File.join(Rails.root, 'spec', 'attachments', 'snap.jpg')})
+    type SNAP_TYPE_PHOTO
+    recipient_ids { [(create :user).id] }
   end
 
   factory :video_snap, class: :snap do
     user_id { (create :user).id }
-    snap_file { (Faker::File.file_name 'snaps', 'snap', 'mp4') }
+    file_type { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'attachments', 'snap.jpg')) }
     duration 10
-    snap_type SNAP_TYPE_VIDEO
+    type SNAP_TYPE_VIDEO
+    recipient_ids { [(create :user).id] }
   end
 end

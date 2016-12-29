@@ -15,6 +15,6 @@ class SnapsController < ApplicationController
 
   private
   def create_params
-    params.permit(:snap_file)
+    params.permit(:file, :user_id, :file_type, :duration, recipient_ids: [])
   end
 end
