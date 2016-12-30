@@ -23,7 +23,7 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'GET #index' do
     it 'should allow access to user list for admin role' do
-      user1 = sign_in_user
+      user1 = sign_in_admin
       user2 = create :user
 
       get :index
@@ -36,8 +36,6 @@ RSpec.describe UsersController, type: :controller do
 
     it 'should not allow access for not admin role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       get :index
 
@@ -51,7 +49,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it 'array should be in collection label' do
-      user1 = sign_in_user
+      user1 = sign_in_admin
       user2 = create :user
 
       get :index
@@ -62,7 +60,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it 'should not show deleted user' do
-      user1 = sign_in_user
+      user1 = sign_in_admin
       user2 = create :user
       user2.safe_delete
 
@@ -75,7 +73,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it 'should not show blocked user' do
-      user1 = sign_in_user
+      user1 = sign_in_admin
       user2 = create :user
       user2.block
 
@@ -123,15 +121,13 @@ RSpec.describe UsersController, type: :controller do
 
     it 'should not allow to show another user for not admin role' do
       logged_user = sign_in_user
-      logged_user.role = USER_ROLE_USER
-      logged_user.save
       user = create :user
       get :show, params: {id: user.id}
       expect(response).to have_http_status :forbidden
     end
 
     it 'should allow to show another user for admin role' do
-      sign_in_user
+      sign_in_admin
       user = create :user
       get :show, params: {id: user.id}
       expect(response).to have_http_status :ok
@@ -222,8 +218,6 @@ RSpec.describe UsersController, type: :controller do
 
     it 'should not allow to edit another account for not admin role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       new_user = create :user
 
@@ -232,9 +226,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it 'should allow to edit another account for admin role' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       new_user = create :user
 
@@ -244,8 +236,6 @@ RSpec.describe UsersController, type: :controller do
 
     it 'should not allow to edit all parameters for not admin role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       old_name = user.name
       old_email = user.email
@@ -261,9 +251,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it 'should allow all parameters for admin role' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       old_name = user.name
       old_email = user.email
@@ -308,17 +296,13 @@ RSpec.describe UsersController, type: :controller do
   describe 'delete #destroy' do
     it 'user should can delete own account' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       delete :destroy, params: {id: user.id}
       expect(response).to have_http_status :success
     end
 
     it 'should allow to delete another account for admin role' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       another_user = create :user
 
@@ -328,8 +312,6 @@ RSpec.describe UsersController, type: :controller do
 
     it 'should not allow to delete another user for user role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       another_user = create :user
 
@@ -374,7 +356,7 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'put #block' do
     it 'should allow for admin role' do
-      sign_in_user
+      sign_in_admin
       another_user = create :user
 
       put :block, params: {id: another_user.id}
@@ -384,8 +366,6 @@ RSpec.describe UsersController, type: :controller do
 
     it 'should not allow for not admin role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       another_user = create :user
 

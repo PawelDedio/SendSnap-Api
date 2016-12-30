@@ -59,6 +59,14 @@ RSpec.configure do |config|
 end
 
 def sign_in_user
+  user = create(:user)
+  user.save
+  user.reload
+  @request.headers[HEADER_AUTH_TOKEN] = 'Token token=' + user.auth_token
+  user
+end
+
+def sign_in_admin
   user = create(:admin)
   user.save
   user.reload

@@ -36,7 +36,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
   describe 'GET #index' do
     it 'should allow for admin role' do
-      user = sign_in_user
+      user = sign_in_admin
 
       invitation = create :friend_invitation
 
@@ -50,8 +50,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should not allow for not admin role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = create :friend_invitation
 
@@ -98,8 +96,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should allow for not admin role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       get :from_me
 
@@ -138,8 +134,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should allow for not admin role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       get :to_me
 
@@ -172,8 +166,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should allow for user role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
 
@@ -251,8 +243,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
   describe 'put #accept' do
     it 'should allow to accept invitation where user is recipient' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
       invitation.recipient_id = user.id
@@ -267,8 +257,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should not allow to accept invitation of another user for user role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = create :friend_invitation
 
@@ -279,9 +267,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
     end
 
     it 'should allow to accept invitation of another user for admin role' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       invitation = create :friend_invitation
 
@@ -294,8 +280,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should not allow to accept invitation where user is author' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
       invitation.author_id = user.id
@@ -316,8 +300,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should create users association after success' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
       invitation.recipient_id = user.id
@@ -335,8 +317,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should not allow to accept rejected invitation' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
       invitation.recipient_id = user.id
@@ -350,8 +330,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should not allow to accept accepted invitation' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
       invitation.recipient_id = user.id
@@ -365,8 +343,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should not allow to accept canceled invitation' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
       invitation.recipient_id = user.id
@@ -382,8 +358,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
   describe 'put #reject' do
     it 'should allow reject invitation where user is recipient' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
       invitation.recipient_id = user.id
@@ -398,8 +372,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should not allow reject invitation where user is author' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
       invitation.author_id = user.id
@@ -411,9 +383,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
     end
 
     it 'should allow to reject another user invitation for admin role' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       invitation = create :friend_invitation
 
@@ -426,8 +396,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should not allow to reject another user invitation for not admin role' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = create :friend_invitation
 
@@ -438,9 +406,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
     end
 
     it 'should not allow to reject accepted invitation' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       invitation = build :friend_invitation
       invitation.accepted_at = Date.today
@@ -452,9 +418,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
     end
 
     it 'should not allow to reject rejected invitation' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       invitation = build :friend_invitation
       invitation.rejected_at = Date.today
@@ -466,9 +430,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
     end
 
     it 'should not allow to reject canceled invitation' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       invitation = build :friend_invitation
       invitation.canceled_at = Date.today
@@ -491,8 +453,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
   describe 'delete #cancel' do
     it 'should allow to cancel invitation where user is author' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
       invitation.author_id = user.id
@@ -507,8 +467,6 @@ RSpec.describe FriendInvitationsController, type: :controller do
 
     it 'should not allow to cancel invitation where user is recipient' do
       user = sign_in_user
-      user.role = USER_ROLE_USER
-      user.save
 
       invitation = build :friend_invitation
       invitation.recipient_id = user.id
@@ -520,9 +478,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
     end
 
     it 'should allow to cancel another user invitation for admin role' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       invitation = create :friend_invitation
 
@@ -534,9 +490,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
     end
 
     it 'should allow to cancel another user invitation for admin role' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       invitation = create :friend_invitation
 
@@ -554,9 +508,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
     end
 
     it 'should not allow to cancel accepted invitation' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       invitation = build :friend_invitation
       invitation.accepted_at = Date.today
@@ -568,9 +520,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
     end
 
     it 'should not allow to cancel rejected invitation' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       invitation = build :friend_invitation
       invitation.rejected_at = Date.today
@@ -582,9 +532,7 @@ RSpec.describe FriendInvitationsController, type: :controller do
     end
 
     it 'should not allow to cancel canceled invitation' do
-      user = sign_in_user
-      user.role = USER_ROLE_ADMIN
-      user.save
+      user = sign_in_admin
 
       invitation = build :friend_invitation
       invitation.canceled_at = Date.today

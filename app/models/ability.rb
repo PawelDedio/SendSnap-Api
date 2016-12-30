@@ -7,6 +7,8 @@ class Ability
       can :manage, :all
     else
       can :manage, User, id: user.id
+      cannot :index, User
+
       can :manage, FriendInvitation, author_id: user.id
       can :manage, FriendInvitation, recipient_id: user.id
       can :accept, FriendInvitation, recipient_id: user.id
@@ -22,7 +24,12 @@ class Ability
         !invitation.author_id.eql? user.id
       end
       cannot :index, FriendInvitation
-      cannot :index, User
+
+      can :manage, Snap, user_id: user.id
+      can :manage, Snap do |snap|
+        snap.recipient_ids.include?(user.id)
+      end
+      cannot :index, Snap
     end
     # Define abilities for the passed in user here. For example:
     #

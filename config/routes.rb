@@ -13,4 +13,6 @@ Rails.application.routes.draw do
   put 'friend_invitations/:id/reject' => 'friend_invitations#reject'
   delete 'friend_invitations/:id/cancel' => 'friend_invitations#cancel'
   resources :friend_invitations
+
+  resources :snaps
 end

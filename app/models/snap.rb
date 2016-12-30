@@ -29,4 +29,14 @@ class Snap < ApplicationRecord
   validates :file_type, presence: true, inclusion: {in: [SNAP_TYPE_PHOTO, SNAP_TYPE_VIDEO]}
   validates :duration, presence: true, numericality: true
   validates :recipient_ids, presence: true
+
+
+  def all_errors
+    errors = self.user_snaps.map do |user_snap|
+      user_snap.errors
+    end
+
+    self.errors[:recipient_ids] = errors
+    self.errors
+  end
 end

@@ -15,7 +15,6 @@ class FriendInvitationsController < ApplicationController
   end
 
   def from_me
-    @friend_invitations = FriendInvitation.accessible_by current_ability
     @friend_invitations = @friend_invitations.where(author_id: current_user.id)
 
     setup_pagination(page: params[:page], page_size: params[:page_size])
@@ -30,7 +29,6 @@ class FriendInvitationsController < ApplicationController
   end
 
   def to_me
-    @friend_invitations = FriendInvitation.accessible_by current_ability
     @friend_invitations = @friend_invitations.where(recipient_id: current_user.id)
 
     setup_pagination(page: params[:page], page_size: params[:page_size])
