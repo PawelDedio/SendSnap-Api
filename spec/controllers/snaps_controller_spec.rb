@@ -10,6 +10,11 @@ RSpec.describe SnapsController, type: :controller do
       uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
       should route(:get, "snaps/#{uuid}").to(action: :show, id: uuid)
     }
+
+    it {
+      uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
+      should route(:get, "snaps#{uuid}/image").to(action: :show, id: uuid)
+    }
   end
 
   describe 'get #index' do
@@ -84,6 +89,38 @@ RSpec.describe SnapsController, type: :controller do
       get :show, params: {id: snap.id}
 
       expect(response).to have_http_status :success
+    end
+
+    it 'user should not see other recipients when is recipient and not admin' do
+      user = sign_in_user
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+
+      get :show, params: {id: snap.id}
+      parsed_response = JSON.parse(response.body)
+
+      expect(parsed_response['recipients']).to be nil
+    end
+
+    it 'user should see recipients when is recipient and not admin' do
+      user = sign_in_user
+
+      snap = build :photo_snap
+      snap.user_id = user.id
+      snap.save
+
+      get :show, params: {id: snap.id}
+      parsed_response = JSON.parse(response.body)
+
+      expect(parsed_response['recipients']).to_not be nil
+    end
+  end
+
+  describe 'GET #image' do
+    it 'should allow to view for author' do
+
     end
   end
 end

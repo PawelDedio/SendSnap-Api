@@ -39,4 +39,6 @@ class Snap < ApplicationRecord
     self.errors[:recipient_ids] = errors
     self.errors
   end
+
+  #TODO: Custom url for image view and increase view count for each image downloading
 end
