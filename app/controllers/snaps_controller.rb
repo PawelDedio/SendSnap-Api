@@ -8,7 +8,7 @@ class SnapsController < ApplicationController
     collection = search_collection(@snaps, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
-           each_serializer: FullSnapSerializer,
+           each_serializer: AuthorSnapSerializer,
            root: COLLECTION_LABEL,
            adapter: :json,
            count: collection.size,
@@ -19,6 +19,26 @@ class SnapsController < ApplicationController
   def show
     render json: @snap,
            serializer: show_serializer
+  end
+
+  def view
+    if @snap.view current_user.id
+      render json: @snap,
+             serializer: RecipientSnapSerializer
+    else
+      render status: :bad_request
+    end
+  end
+
+  def image
+    view_count = @snap.view_count current_user.id
+
+    if view_count < 1
+      #send_data open(@snap.file.path)
+      send_file @snap.file.path, type: "image/gif", disposition: "inline"
+    else
+      render status: :bad_request
+    end
   end
 
   def create
@@ -38,15 +58,10 @@ class SnapsController < ApplicationController
   end
 
   def show_serializer
-    if current_user.role.eql? USER_ROLE_ADMIN
-      FullSnapSerializer
-      return
-    end
-
-    if @snap.user_id.eql? current_user.id
-      AuthorSnapSerializer
-    else
+    if @snap.recipient_ids.include? current_user.id
       RecipientSnapSerializer
+    else
+      AuthorSnapSerializer
     end
   end
 end

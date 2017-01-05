@@ -5,6 +5,10 @@ class Ability
 
     if user.role.eql?(USER_ROLE_ADMIN)
       can :manage, :all
+
+      cannot :view, Snap do |snap|
+        !snap.recipient_ids.include? user.id
+      end
     else
       can :manage, User, id: user.id
       cannot :index, User
@@ -30,6 +34,10 @@ class Ability
         snap.recipient_ids.include?(user.id)
       end
       cannot :index, Snap
+      cannot :view, Snap do |snap|
+        !snap.recipient_ids.include? user.id
+      end
+      can :image, Snap
     end
     # Define abilities for the passed in user here. For example:
     #

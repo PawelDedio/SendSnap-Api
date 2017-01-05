@@ -40,5 +40,15 @@ class Snap < ApplicationRecord
     self.errors
   end
 
-  #TODO: Custom url for image view and increase view count for each image downloading
+  def view user_id
+    user_snap = self.user_snaps.find_by_user_id(user_id)
+    user_snap.view_count += 1
+    user_snap.save
+  end
+
+  def view_count user_id
+    self.user_snaps.find_by_user_id(user_id).view_count
+  end
+
+  #TODO: Custom url for image view and validation of view_count
 end

@@ -9,6 +9,6 @@ class AuthorSnapSerializer < ActiveModel::Serializer
              :updated_at
 
   def recipients
-    ActiveModelSerializers::SerializableResource.new(self.object.recipients, each_serializer: UserSerializer).to_json
+    ActiveModelSerializers::SerializableResource.new(self.object.recipients, each_serializer: UserSerializer)
   end
 end

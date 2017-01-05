@@ -14,4 +14,14 @@ RSpec.describe UserSnap, type: :model do
       should validate_uniqueness_of(:user_id).scoped_to(:snap_id).case_insensitive
     end
   end
+
+  describe 'validate view_count' do
+    it 'should validate presence' do
+      should validate_presence_of(:view_count)
+    end
+
+    it 'should validate numericality' do
+      should validate_numericality_of(:view_count)
+    end
+  end
 end

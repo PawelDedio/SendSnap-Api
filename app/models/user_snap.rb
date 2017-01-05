@@ -19,4 +19,5 @@ class UserSnap < ApplicationRecord
   belongs_to :snap
 
   validates :user_id, uniqueness: {scope: :snap_id}
+  validates :view_count, presence: true, numericality: true
 end

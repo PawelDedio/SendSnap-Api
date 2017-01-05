@@ -13,7 +13,12 @@ RSpec.describe SnapsController, type: :controller do
 
     it {
       uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
-      should route(:get, "snaps#{uuid}/image").to(action: :show, id: uuid)
+      should route(:put, "snaps/#{uuid}/view").to(action: :view, id: uuid)
+    }
+
+    it {
+      uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
+      should route(:put, "snaps/#{uuid}/image").to(action: :image, id: uuid)
     }
   end
 
@@ -116,11 +121,129 @@ RSpec.describe SnapsController, type: :controller do
 
       expect(parsed_response['recipients']).to_not be nil
     end
+
+    it 'should show view count for recipient' do
+      user = sign_in_user
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+
+      get :show, params: {id: snap.id}
+      parsed_response = JSON.parse(response.body)
+
+      expect(parsed_response['view_count']).to_not be nil
+    end
+
+    it 'should not show view count for author' do
+      user = sign_in_user
+
+      snap = build :photo_snap
+      snap.user_id = user.id
+      snap.save
+
+      get :show, params: {id: snap.id}
+      parsed_response = JSON.parse(response.body)
+
+      expect(parsed_response['view_count']).to be nil
+    end
+
+    it 'should not allow for unauthorized user' do
+      snap = create :photo_snap
+
+      get :show, params: {id: snap.id}
+
+      expect(response).to have_http_status :unauthorized
+    end
   end
 
-  describe 'GET #image' do
-    it 'should allow to view for author' do
+  describe 'PUT #view' do
+    it 'should allow to view for recipient user' do
+      user = sign_in_user
 
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+
+      put :view, params: {id: snap.id}
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should not allow to view for author user' do
+      user = sign_in_user
+
+      snap = build :photo_snap
+      snap.user_id = user.id
+      snap.save
+
+      put :view, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow to view for admin' do
+      sign_in_admin
+
+      snap = create :photo_snap
+
+      put :view, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should allow to view for recipient admin' do
+      user = sign_in_admin
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+
+      put :view, params: {id: snap.id}
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should increment view count for current recipient after image view' do
+      user = sign_in_user
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+
+      old_count = snap.user_snaps.find_by_user_id(user.id).view_count
+
+      put :view, params: {id: snap.id}
+
+      new_count = snap.user_snaps.find_by_user_id(user.id).view_count
+
+      expect(new_count - old_count).to eql 1
+    end
+
+    it 'should not allow for unauthorized user' do
+      snap = create :photo_snap
+
+      put :view, params: {id: snap.id}
+
+      expect(response).to have_http_status :unauthorized
+    end
+  end
+
+  describe 'get #image' do
+    it 'should allow for recipient when view_count less than 1' do
+      user = sign_in_user
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+
+      association = snap.user_snaps.find_by_user_id(user.id)
+      association.view_count = 0
+      association.save
+
+      get :image, params: {id: snap.id}
+
+      expect(response).to have_http_status :success
     end
   end
 end
