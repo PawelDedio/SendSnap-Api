@@ -9,6 +9,8 @@ class SnapsController < ApplicationController
     render json: collection,
            serializer: CollectionSerializer,
            each_serializer: FullSnapSerializer,
+           root: COLLECTION_LABEL,
+           adapter: :json,
            count: collection.size,
            page: page,
            page_size: page_size

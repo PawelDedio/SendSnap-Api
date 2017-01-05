@@ -1,6 +1,4 @@
-class CollectionSerializer < ActiveModel::ArraySerializer
-
-  root :collection
+class CollectionSerializer < ActiveModel::Serializer::CollectionSerializer
 
   attr_reader :count, :page, :per_page
 

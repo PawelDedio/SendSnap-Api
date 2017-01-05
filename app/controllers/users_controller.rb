@@ -9,6 +9,8 @@ class UsersController < ApplicationController
     render json: collection,
            serializer: CollectionSerializer,
            each_serializer: UserSerializer,
+           root: COLLECTION_LABEL,
+           adapter: :json,
            count: collection.size,
            page: page,
            page_size: page_size

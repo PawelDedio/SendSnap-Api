@@ -27,7 +27,7 @@ gem 'cancancan', '~> 1.10'
 #email validator https://github.com/balexand/email_validator
 gem 'email_validator', '~> 1.6.0'
 
-gem 'active_model_serializers', '0.9.3'
+gem 'active_model_serializers', '0.10.3'
 
 #file uploader https://github.com/carrierwaveuploader/carrierwave/releases
 gem 'carrierwave', '~> 1.0'
