@@ -34,8 +34,7 @@ class SnapsController < ApplicationController
     view_count = @snap.view_count current_user.id
 
     if view_count < 1
-      #send_data open(@snap.file.path)
-      send_file @snap.file.path, type: "image/gif", disposition: "inline"
+      send_file @snap.file.path, type: 'image/png', disposition: 'inline'
     else
       render status: :bad_request
     end
@@ -43,6 +42,7 @@ class SnapsController < ApplicationController
 
   def create
     @snap = Snap.new create_params
+    @snap.user = current_user
 
     if @snap.save
       render status: :created, json: @snap
@@ -54,7 +54,7 @@ class SnapsController < ApplicationController
 
   private
   def create_params
-    params.permit(:file, :user_id, :file_type, :duration, recipient_ids: [])
+    params.permit(:file, :file_type, :duration, recipient_ids: [])
   end
 
   def show_serializer

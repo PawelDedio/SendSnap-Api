@@ -36,17 +36,17 @@ class Snap < ApplicationRecord
       user_snap.errors
     end
 
-    self.errors[:recipient_ids] = errors
+    self.errors.add(:recipient_ids, errors)
     self.errors
   end
 
-  def view user_id
+  def view(user_id)
     user_snap = self.user_snaps.find_by_user_id(user_id)
     user_snap.view_count += 1
     user_snap.save
   end
 
-  def view_count user_id
+  def view_count(user_id)
     self.user_snaps.find_by_user_id(user_id).view_count
   end
 

@@ -18,7 +18,7 @@ RSpec.describe SnapsController, type: :controller do
 
     it {
       uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
-      should route(:put, "snaps/#{uuid}/image").to(action: :image, id: uuid)
+      should route(:get, "snaps/#{uuid}/image").to(action: :image, id: uuid)
     }
   end
 
@@ -230,7 +230,7 @@ RSpec.describe SnapsController, type: :controller do
   end
 
   describe 'get #image' do
-    it 'should allow for recipient when view_count less than 1' do
+    it 'should allow for recipient when view_count less than 1 for user role' do
       user = sign_in_user
 
       snap = build :photo_snap
@@ -244,6 +244,66 @@ RSpec.describe SnapsController, type: :controller do
       get :image, params: {id: snap.id}
 
       expect(response).to have_http_status :success
+    end
+
+    it 'should allow for recipient when view_count less than 1 for admin role' do
+      user = sign_in_admin
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+
+      association = snap.user_snaps.find_by_user_id(user.id)
+      association.view_count = 0
+      association.save
+
+      get :image, params: {id: snap.id}
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should not allow for recipient when view_count more than 0' do
+      user = sign_in_user
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+
+      association = snap.user_snaps.find_by_user_id(user.id)
+      association.view_count = 1
+      association.save
+
+      get :image, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow for not authorized user' do
+      snap = create :photo_snap
+
+      get :image, params: {id: snap.id}
+
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'should not allow to view another user snap for user role' do
+      sign_in_user
+
+      snap = create :photo_snap
+
+      get :image, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow to view another user snap for admin role' do
+      sign_in_admin
+
+      snap = create :photo_snap
+
+      get :image, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
     end
   end
 end
