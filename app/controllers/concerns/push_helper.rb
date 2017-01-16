@@ -1,13 +1,13 @@
 class PushHelper
 
   def send_android_notification(registration_ids, data, priority, notification)
-    notification = Rpush::Gcm::Notification.new
-    notification.app = Rpush::Gcm::App.find_by_name('android_app')
-    notification.registration_ids = registration_ids
-    notification.data = data
-    notification.priority = priority
-    notification.content_available = true
-    notification.notification = notification
-    notification.save!
+    push = Rpush::Gcm::Notification.new
+    push.app = Rpush::Gcm::App.find_by_name('android_app')
+    push.registration_ids = registration_ids
+    push.data = data
+    push.priority = priority
+    push.content_available = true
+    push.notification = notification
+    push.save!
   end
 end
