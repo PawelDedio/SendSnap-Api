@@ -35,6 +35,8 @@ gem 'carrierwave', '~> 1.0'
 #push notifications for most of platforms https://github.com/rpush/rpush
 gem 'rpush', '~> 2.7.0'
 
+gem 'net-http-persistent', '2.9.4'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri

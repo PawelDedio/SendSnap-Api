@@ -1,6 +1,6 @@
 class CreateUserSnaps < ActiveRecord::Migration[5.0]
   def up
-    create_table :user_snaps do |t|
+    create_table :user_snaps, id: :uuid do |t|
       t.uuid :user_id, null: false
       t.uuid :snap_id, null: false
       t.integer :view_count, default: 0, null: false

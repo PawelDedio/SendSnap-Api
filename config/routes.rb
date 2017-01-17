@@ -17,4 +17,6 @@ Rails.application.routes.draw do
   put 'snaps/:id/view' => 'snaps#view'
   get 'snaps/:id/image' => 'snaps#image'
   resources :snaps
+
+  resources :user_devices, only: [:create]
 end

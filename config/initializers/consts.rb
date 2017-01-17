@@ -19,3 +19,7 @@ DEFAULT_SORT_ORDER = :asc
 
 SNAP_TYPE_PHOTO = 'photo'
 SNAP_TYPE_VIDEO = 'video'
+
+ANDROID_DEVICE = 'android'
+
+NOTIFICATION_FRIEND_INVITATION = 'friend_invitation'

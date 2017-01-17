@@ -33,6 +33,7 @@ class User < ApplicationRecord
   has_many :snaps
   has_many :user_snaps
   has_many :received_snaps, through: :user_snaps, source: :snap
+  has_many :user_devices
 
 
   validates :name, presence: true, uniqueness: true, length: {minimum: USER_NAME_MIN_LENGTH, maximum: USER_NAME_MAX_LENGTH}
