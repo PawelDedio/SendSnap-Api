@@ -17,7 +17,6 @@ class SnapsController < ApplicationController
   end
 
   def show
-    FriendInvitationNotifications.user_invited nil, nil
     render json: @snap,
            serializer: show_serializer
   end
