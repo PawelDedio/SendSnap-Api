@@ -50,6 +50,16 @@ RSpec.configure do |config|
 
   config.include FactoryGirl::Syntax::Methods
 
+  config.before(:suite) do
+    if Rpush::Gcm::App.find_by_name(ANDROID_DEVICE).nil?
+      app = Rpush::Gcm::App.new
+      app.name = ANDROID_DEVICE
+      app.auth_key = Faker::Crypto.sha1
+      app.connections = 1
+      app.save!
+    end
+  end
+
   config.after(:all) do
     # Get rid of the linked images
     if Rails.env.test? || Rails.env.cucumber?

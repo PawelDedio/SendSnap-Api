@@ -46,5 +46,22 @@ RSpec.describe UserDevicesController, type: :controller do
 
       expect(user.user_devices.count).to eql 1
     end
+
+    it 'should not duplicate records for the same device' do
+      user = sign_in_user
+
+      first = build :android_device
+      first.user = user
+      first.save
+
+      second = build :android_device
+      second.device_id = first.device_id
+
+      post :create, params: second.attributes
+
+      expect(response).to have_http_status :success
+
+      expect(UserDevice.all.count).to eql 1
+    end
   end
 end

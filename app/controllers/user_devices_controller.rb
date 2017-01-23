@@ -2,8 +2,7 @@ class UserDevicesController < ApplicationController
   before_action :authenticate_user
 
   def create
-    @user_device = UserDevice.new create_params
-    @user_device.user = current_user
+    @user_device = create_device
 
     if @user_device.save
       render status: :no_content
@@ -16,5 +15,17 @@ class UserDevicesController < ApplicationController
   private
   def create_params
     params.permit(:registration_id, :device_type, :device_id)
+  end
+
+  def create_device
+    device = UserDevice.find_by_device_id(create_params[:device_id])
+
+    if device.nil?
+      device = UserDevice.new create_params
+    else
+      device.registration_id = create_params[:registration_id]
+    end
+    device.user = current_user
+    device
   end
 end

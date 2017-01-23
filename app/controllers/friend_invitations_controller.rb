@@ -55,6 +55,7 @@ class FriendInvitationsController < ApplicationController
       render json: @friend_invitation,
              serializer: FriendInvitationSerializer,
              status: :created
+      FriendInvitationNotifications.user_invited(@friend_invitation.author, @friend_invitation.recipient)
     else
       render json: @friend_invitation.errors,
              status: :bad_request
@@ -70,6 +71,7 @@ class FriendInvitationsController < ApplicationController
 
       if res
         render status: :no_content
+        FriendInvitationNotifications.invitation_accepted(@friend_invitation.author, @friend_invitation.recipient)
       else
         render json: @friend_invitation.errors,
                status: :bad_request
@@ -83,6 +85,7 @@ class FriendInvitationsController < ApplicationController
   def reject
     if @friend_invitation.reject
       render status: :no_content
+      FriendInvitationNotifications.invitation_rejected(@friend_invitation.author, @friend_invitation.recipient)
     else
       render json: @friend_invitation.errors,
              status: :bad_request

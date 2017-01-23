@@ -23,3 +23,5 @@ SNAP_TYPE_VIDEO = 'video'
 ANDROID_DEVICE = 'android'
 
 NOTIFICATION_FRIEND_INVITATION = 'friend_invitation'
+NOTIFICATION_INVITATION_ACCEPTED = 'invitation_accepted'
+NOTIFICATION_INVITATION_REJECTED = 'invitation_rejected'

@@ -72,5 +72,20 @@ RSpec.describe SessionsController, type: :controller do
 
       expect(response).to have_http_status :unauthorized
     end
+
+    it 'should delete all user devices' do
+      user = sign_in_user
+
+      device = build :android_device
+      device.user_id = user.id
+      device.save
+
+      expect(user.user_devices.count).to eql 1
+
+      delete :destroy
+
+      user.reload
+      expect(user.user_devices.count).to eql 0
+    end
   end
 end

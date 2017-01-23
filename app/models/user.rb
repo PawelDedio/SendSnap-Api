@@ -50,6 +50,7 @@ class User < ApplicationRecord
   def sign_out
     self.auth_token = nil
     self.token_expire_time = nil
+    self.user_devices.destroy_all
   end
 
   def set_auth_token
