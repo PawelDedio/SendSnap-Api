@@ -55,7 +55,7 @@ class FriendInvitationsController < ApplicationController
       render json: @friend_invitation,
              serializer: FriendInvitationSerializer,
              status: :created
-      FriendInvitationNotifications.user_invited(@friend_invitation.author, @friend_invitation.recipient)
+      FriendInvitationNotifications.notification_received(@friend_invitation.author, @friend_invitation.recipient)
     else
       render json: @friend_invitation.errors,
              status: :bad_request

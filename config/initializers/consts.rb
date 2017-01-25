@@ -22,6 +22,11 @@ SNAP_TYPE_VIDEO = 'video'
 
 ANDROID_DEVICE = 'android'
 
-NOTIFICATION_FRIEND_INVITATION = 'friend_invitation'
+NOTIFICATION_INVITATION_RECEIVED = 'invitation_received'
 NOTIFICATION_INVITATION_ACCEPTED = 'invitation_accepted'
 NOTIFICATION_INVITATION_REJECTED = 'invitation_rejected'
+
+NOTIFICATION_SNAP_RECEIVED = 'snap_received'
+NOTIFICATION_SNAP_VIEWED = 'snap_viewed'
+NOTIFICATION_SNAP_REPLAYED  = 'snap_replayed'
+NOTIFICATION_SNAP_SCREENSHOT_MADE = 'snap_screenshot_maked'

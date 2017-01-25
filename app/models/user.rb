@@ -72,6 +72,14 @@ class User < ApplicationRecord
     self.save
   end
 
+  def display_name
+    if super.present?
+      super
+    else
+      self.name
+    end
+  end
+
   def all_friends
     User.joins("INNER JOIN users_users ON (users.id = users_users.user_id OR users.id = users_users.friend_id)")
         .where("users.id != '#{self.id}'").distinct

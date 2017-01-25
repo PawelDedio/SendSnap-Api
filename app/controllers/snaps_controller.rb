@@ -25,6 +25,7 @@ class SnapsController < ApplicationController
     if @snap.view current_user.id
       render json: @snap,
              serializer: RecipientSnapSerializer
+      SnapNotifications.snap_viewed @snap, current_user
     else
       render status: :bad_request
     end
@@ -46,6 +47,7 @@ class SnapsController < ApplicationController
 
     if @snap.save
       render status: :created, json: @snap
+      SnapNotifications.snap_received @snap
     else
       render status: :bad_request, json: @snap.all_errors
     end
