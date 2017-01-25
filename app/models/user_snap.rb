@@ -2,12 +2,14 @@
 #
 # Table name: user_snaps
 #
-#  id         :integer          not null, primary key
-#  user_id    :uuid             not null
-#  snap_id    :uuid             not null
-#  view_count :integer          default(0), not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id             :uuid             not null, primary key
+#  user_id        :uuid             not null
+#  snap_id        :uuid             not null
+#  view_count     :integer          default(0), not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  last_viewed_at :datetime
+#  screenshot_at  :datetime
 #
 # Indexes
 #
@@ -20,4 +22,5 @@ class UserSnap < ApplicationRecord
 
   validates :user_id, uniqueness: {scope: :snap_id}
   validates :view_count, presence: true, numericality: true
+  validates :last_viewed_at, presence: true, if: -> (user_snap) {user_snap.view_count.present? && user_snap.view_count > 0}
 end

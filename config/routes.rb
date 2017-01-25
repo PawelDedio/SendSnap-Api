@@ -16,5 +16,7 @@ Rails.application.routes.draw do
 
   put 'snaps/:id/view' => 'snaps#view'
   get 'snaps/:id/image' => 'snaps#image'
+  put 'snaps/:id/replay' => 'snaps#replay'
+  put 'snaps/:id/screenshot' => 'snaps#screenshot'
   resources :snaps
 end
