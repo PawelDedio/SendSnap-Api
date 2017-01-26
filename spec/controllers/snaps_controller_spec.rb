@@ -281,6 +281,7 @@ RSpec.describe SnapsController, type: :controller do
 
       association = snap.user_snaps.find_by_user_id(user.id)
       association.view_count = 1
+      association.last_viewed_at = DateTime.now
       association.save
 
       get :image, params: {id: snap.id}
