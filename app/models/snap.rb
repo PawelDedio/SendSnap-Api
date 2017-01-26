@@ -43,6 +43,24 @@ class Snap < ApplicationRecord
   def view(user_id)
     user_snap = self.user_snaps.find_by_user_id(user_id)
     user_snap.view_count += 1
+    user_snap.last_viewed_at = DateTime.now
+    user_snap.save
+  end
+
+  def replay(user)
+    user_snap = self.user_snaps.find_by_user_id(user.id)
+
+    if user_snap.last_viewed_at < 1.hour.ago
+      return false
+    end
+    user_snap.view_count -= 1
+    user.last_replay_at = DateTime.now
+    user_snap.save && user.save
+  end
+
+  def screenshot(user_id)
+    user_snap = self.user_snaps.find_by_user_id(user_id)
+    user_snap.screenshot_at = DateTime.now
     user_snap.save
   end
 

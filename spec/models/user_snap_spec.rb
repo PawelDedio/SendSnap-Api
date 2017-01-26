@@ -24,4 +24,16 @@ RSpec.describe UserSnap, type: :model do
       should validate_numericality_of(:view_count)
     end
   end
+
+  describe 'validate last_viewed_at' do
+    it 'should validate presence if count is greater than 0' do
+      snap = build :user_snap
+      snap.view_count = 1
+      snap.last_viewed_at = nil
+
+      res = snap.save
+
+      expect(res).to be false
+    end
+  end
 end

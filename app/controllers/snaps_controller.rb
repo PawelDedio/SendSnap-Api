@@ -53,6 +53,22 @@ class SnapsController < ApplicationController
     end
   end
 
+  def replay
+    if @snap.replay current_user
+      render status: :no_content
+    else
+      render status: :forbidden
+    end
+  end
+
+  def screenshot
+    if @snap.screenshot current_user.id
+      render status: :no_content
+    else
+      render status: :bad_request
+    end
+  end
+
 
   private
   def create_params

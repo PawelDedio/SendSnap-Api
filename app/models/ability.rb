@@ -9,10 +9,6 @@ class Ability
       cannot :view, Snap do |snap|
         !snap.recipient_ids.include? user.id
       end
-
-      cannot :image, Snap do |snap|
-        !snap.recipient_ids.include?(user.id) || !(snap.view_count(user.id) < 1)
-      end
     else
       can :manage, User, id: user.id
       cannot :index, User
@@ -41,9 +37,18 @@ class Ability
       cannot :view, Snap do |snap|
         !snap.recipient_ids.include? user.id
       end
-      cannot :image, Snap do |snap|
-        !snap.recipient_ids.include?(user.id) || !(snap.view_count(user.id) < 1)
-      end
+    end
+
+    cannot :image, Snap do |snap|
+      !snap.recipient_ids.include?(user.id) || (snap.view_count(user.id) > 0)
+    end
+
+    cannot :replay, Snap do |snap|
+      !snap.recipient_ids.include?(user.id) || (user.last_replay_at.present? && user.last_replay_at > 24.hour.ago)
+    end
+
+    cannot :screenshot, Snap do |snap|
+      !snap.recipient_ids.include?(user.id)
     end
     # Define abilities for the passed in user here. For example:
     #

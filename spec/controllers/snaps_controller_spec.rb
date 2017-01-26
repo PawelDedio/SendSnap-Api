@@ -20,6 +20,16 @@ RSpec.describe SnapsController, type: :controller do
       uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
       should route(:get, "snaps/#{uuid}/image").to(action: :image, id: uuid)
     }
+
+    it {
+      uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
+      should route(:put, "snaps/#{uuid}/replay").to(action: :replay, id: uuid)
+    }
+
+    it {
+      uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
+      should route(:put, "snaps/#{uuid}/screenshot").to(action: :screenshot, id: uuid)
+    }
   end
 
   describe 'get #index' do
@@ -271,6 +281,7 @@ RSpec.describe SnapsController, type: :controller do
 
       association = snap.user_snaps.find_by_user_id(user.id)
       association.view_count = 1
+      association.last_viewed_at = DateTime.now
       association.save
 
       get :image, params: {id: snap.id}
@@ -304,6 +315,152 @@ RSpec.describe SnapsController, type: :controller do
       get :image, params: {id: snap.id}
 
       expect(response).to have_http_status :forbidden
+    end
+  end
+
+  describe 'put #replay' do
+    it 'should allow when user is recipient' do
+      user = sign_in_user
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+      snap.view user.id
+
+      put :replay, params: {id: snap.id}
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should allow when admin is recipient' do
+      user = sign_in_admin
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+      snap.view user.id
+
+      put :replay, params: {id: snap.id}
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should not allow when last_viewed_at is older than hour ago' do
+      user = sign_in_admin
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+      snap.view user.id
+
+      user_snap = snap.user_snaps.find_by_user_id(user.id)
+      user_snap.last_viewed_at = Date.today - 2.hour
+      user_snap.save
+
+      put :replay, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should allow only one replay per day' do
+      user = sign_in_user
+      user.last_replay_at = DateTime.now
+      user.save
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+      snap.view user.id
+
+      put :replay, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow for not recipient' do
+      sign_in_admin
+
+      snap = create :photo_snap
+
+      put :replay, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow for author' do
+      user = sign_in_user
+
+      snap = build :photo_snap
+      snap.user = user
+      snap.save
+
+      put :replay, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow for unauthorized user' do
+      snap = create :photo_snap
+
+      put :replay, params: {id: snap.id}
+
+      expect(response).to have_http_status :unauthorized
+    end
+  end
+
+  describe 'put #screenshot' do
+    it 'should allow when admin is recipient' do
+      user = sign_in_admin
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+
+      put :screenshot, params: {id: snap.id}
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should allow when user is recipient' do
+      user = sign_in_admin
+
+      snap = build :photo_snap
+      snap.recipient_ids = [user.id]
+      snap.save
+
+      put :screenshot, params: {id: snap.id}
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should not allow for not recipient' do
+      user = sign_in_admin
+
+      snap = create :photo_snap
+
+      put :screenshot, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow for author' do
+      user = sign_in_admin
+
+      snap = build :photo_snap
+      snap.user = user
+      snap.save
+
+      put :screenshot, params: {id: snap.id}
+
+      expect(response).to have_http_status :forbidden
+    end
+
+    it 'should not allow for unauthorized user' do
+      snap = create :photo_snap
+
+      put :screenshot, params: {id: snap.id}
+
+      expect(response).to have_http_status :unauthorized
     end
   end
 end
