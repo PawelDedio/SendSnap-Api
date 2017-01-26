@@ -98,6 +98,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_user
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 
@@ -110,6 +111,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_user
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 
@@ -119,7 +121,7 @@ RSpec.describe SnapsController, type: :controller do
       expect(parsed_response['recipients']).to be nil
     end
 
-    it 'user should see recipients when is recipient and not admin' do
+    it 'user should see recipients when is author and not admin' do
       user = sign_in_user
 
       snap = build :photo_snap
@@ -136,6 +138,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_user
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 
@@ -172,6 +175,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_user
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 
@@ -206,6 +210,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_admin
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 
@@ -218,6 +223,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_user
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 
@@ -244,6 +250,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_user
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 
@@ -260,6 +267,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_admin
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 
@@ -276,6 +284,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_user
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 
@@ -318,11 +327,56 @@ RSpec.describe SnapsController, type: :controller do
     end
   end
 
+  describe 'post #create' do
+    it 'should return success for correct photo data' do
+      sign_in_user
+
+      snap = build :photo_snap
+      file = Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'attachments', 'snap.jpg'))
+
+      post :create, params: snap.attributes.merge({recipient_ids: snap.recipient_ids, file: file})
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should return success for correct video data' do
+      sign_in_user
+
+      snap = build :video_snap
+      file = Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'attachments', 'snap.jpg'))
+
+      post :create, params: snap.attributes.merge({recipient_ids: snap.recipient_ids, file: file})
+
+      expect(response).to have_http_status :success
+    end
+
+    it 'should return bad request for bad data' do
+      sign_in_user
+
+      snap = build :photo_snap
+      snap.file = nil
+
+      post :create, params: snap.attributes
+
+      expect(response).to have_http_status :bad_request
+    end
+
+    it 'should not allow for unauthorized user' do
+      snap = build :video_snap
+      file = Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec', 'attachments', 'snap.jpg'))
+
+      post :create, params: snap.attributes.merge({recipient_ids: snap.recipient_ids, file: file})
+
+      expect(response).to have_http_status :unauthorized
+    end
+  end
+
   describe 'put #replay' do
     it 'should allow when user is recipient' do
       user = sign_in_user
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
       snap.view user.id
@@ -336,6 +390,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_admin
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
       snap.view user.id
@@ -349,6 +404,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_admin
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
       snap.view user.id
@@ -368,6 +424,7 @@ RSpec.describe SnapsController, type: :controller do
       user.save
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
       snap.view user.id
@@ -413,6 +470,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_admin
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 
@@ -425,6 +483,7 @@ RSpec.describe SnapsController, type: :controller do
       user = sign_in_admin
 
       snap = build :photo_snap
+      snap.user.friend_ids = user.id
       snap.recipient_ids = [user.id]
       snap.save
 

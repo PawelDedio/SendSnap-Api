@@ -25,7 +25,7 @@ FactoryGirl.define do
     display_name {Faker::Name.first_name[0, USER_NAME_MAX_LENGTH]}
     email {Faker::Internet.email}
     terms_accepted true
-    role 'user'
+    role USER_ROLE_USER
   end
 
   factory :admin, class: User do
@@ -35,6 +35,6 @@ FactoryGirl.define do
     display_name {Faker::Name.first_name[0, USER_NAME_MAX_LENGTH]}
     email {Faker::Internet.email}
     terms_accepted true
-    role 'admin'
+    role USER_ROLE_ADMIN
   end
 end
