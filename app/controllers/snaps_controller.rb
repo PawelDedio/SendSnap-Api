@@ -56,6 +56,7 @@ class SnapsController < ApplicationController
   def replay
     if @snap.replay current_user
       render status: :no_content
+      SnapNotifications.snap_replayed @snap, current_user
     else
       render status: :forbidden
     end
@@ -64,6 +65,7 @@ class SnapsController < ApplicationController
   def screenshot
     if @snap.screenshot current_user.id
       render status: :no_content
+      SnapNotifications.screenshot_made @snap, current_user
     else
       render status: :bad_request
     end
