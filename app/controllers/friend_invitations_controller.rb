@@ -4,7 +4,7 @@ class FriendInvitationsController < ApplicationController
 
   def index
     setup_pagination(page: params[:page], page_size: params[:page_size])
-    setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order])
+    setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: FriendInvitation)
     collection = search_collection(@friend_invitations, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
@@ -19,7 +19,7 @@ class FriendInvitationsController < ApplicationController
     @friend_invitations = @friend_invitations.where(author_id: current_user.id)
 
     setup_pagination(page: params[:page], page_size: params[:page_size])
-    setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order])
+    setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: FriendInvitation)
     collection = search_collection(@friend_invitations, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
@@ -34,7 +34,7 @@ class FriendInvitationsController < ApplicationController
     @friend_invitations = @friend_invitations.where(recipient_id: current_user.id)
 
     setup_pagination(page: params[:page], page_size: params[:page_size])
-    setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order])
+    setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: FriendInvitation)
     collection = search_collection(@friend_invitations, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
