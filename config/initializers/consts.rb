@@ -29,4 +29,24 @@ NOTIFICATION_INVITATION_REJECTED = 'invitation_rejected'
 NOTIFICATION_SNAP_RECEIVED = 'snap_received'
 NOTIFICATION_SNAP_VIEWED = 'snap_viewed'
 NOTIFICATION_SNAP_REPLAYED  = 'snap_replayed'
-NOTIFICATION_SNAP_SCREENSHOT_MADE = 'snap_screenshot_maked'
+NOTIFICATION_SNAP_SCREENSHOT_MADE = 'snap_screenshot_made'
+
+MESSAGE_SENT_STREAM = 'message_sent'
+MESSAGE_TYPING_STREAM = 'message_typing'
+MESSAGE_READED_STREAM = 'message_readed'
+
+def message_sent_stream(id)
+  MESSAGE_SENT_STREAM + "\##{id}"
+end
+
+def message_typing_stream(id)
+  MESSAGE_TYPING_STREAM + "\##{id}"
+end
+
+def message_readed_stream(id)
+  MESSAGE_READED_STREAM + "\##{id}"
+end
+
+MESSAGE_AUTHOR_ID = 'author_id'
+MESSAGE_RECIPIENT_ID = 'recipient_id'
+MESSAGE_CONTENT = 'message'

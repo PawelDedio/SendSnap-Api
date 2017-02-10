@@ -40,5 +40,9 @@ RSpec.describe ChatMessage, type: :model do
     it 'should validate presence of' do
       should validate_presence_of(:message)
     end
+
+    it 'should allow only message with length grater than 0' do
+      should validate_length_of(:message).is_at_least(1)
+    end
   end
 end
