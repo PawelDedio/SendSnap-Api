@@ -4,7 +4,7 @@ RSpec.describe ChatMessagesController, type: :controller do
   describe 'routes test', type: :routing do
     it {
       uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
-      should route(:get, "chat_messages/#{uuid}").to(action: :index, participant: uuid)
+      should route(:get, "chat_messages/thread/#{uuid}").to(action: :thread, participant: uuid)
     }
 
     it {
@@ -17,7 +17,7 @@ RSpec.describe ChatMessagesController, type: :controller do
     }
   end
 
-  describe 'get #index' do
+  describe 'get #thread' do
     it 'should return only unread messages' do
       recipient = sign_in_user
       author = create :user
@@ -26,15 +26,15 @@ RSpec.describe ChatMessagesController, type: :controller do
 
       first = build :chat_message
       first.author = author
-      first.recipient = recipient
+      first.recipient_id = recipient.id
       first.readed_at = DateTime.now
       first.save
       second = build :chat_message
       second.author = author
-      second.recipient = recipient
+      second.recipient_id = recipient.id
       second.save
 
-      get :index, params: {participant: author.id}
+      get :thread, params: {participant: author.id}
       parsed_response = JSON.parse(response.body)
 
       expect(response).to have_http_status :success
@@ -45,15 +45,16 @@ RSpec.describe ChatMessagesController, type: :controller do
       recipient = sign_in_user
       author = create :user
 
-      get :index, params: {participant: author.id}
+      get :thread, params: {participant: author.id}
+      parsed_response = JSON.parse(response.body)
 
-      expect(response).to have_http_status :forbidden
+      expect(parsed_response[COLLECTION_LABEL].count.to_i).to eql 0
     end
 
     it 'should not allow for unauthorized user' do
       author = create :user
 
-      get :index, params: {participant: author.id}
+      get :thread, params: {participant: author.id}
 
       expect(response).to have_http_status :unauthorized
     end

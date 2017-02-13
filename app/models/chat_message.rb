@@ -21,6 +21,14 @@ class ChatMessage < ApplicationRecord
   belongs_to :recipient, class_name: 'User'
 
   validates :author_id, presence: true
-  validates :recipient_id, presence: true, recipient_id: true
+  validates :recipient_id, presence: true, message_recipient_id: true
   validates :message, presence: true, length: {minimum: 1}
+
+  def self.thread(user_id, friend_id)
+    ChatMessage.where(author_id: [user_id, friend_id], recipient_id: [user_id, friend_id]).distinct
+  end
+
+  def self.unread_thread(user_id, friend_id)
+    self.thread(user_id, friend_id).where(readed_at: nil)
+  end
 end

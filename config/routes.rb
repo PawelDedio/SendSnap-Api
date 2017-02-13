@@ -21,4 +21,8 @@ Rails.application.routes.draw do
   resources :snaps
 
   resources :user_devices, only: [:create]
+
+  get 'chat_messages/thread/:participant' => 'chat_messages#thread'
+  put 'chat_messages/:id/read' => 'chat_messages#read'
+  resources :chat_messages, only: [:create]
 end
