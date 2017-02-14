@@ -54,6 +54,10 @@ class Ability
     cannot :screenshot, Snap do |snap|
       !snap.recipient_ids.include?(user.id)
     end
+
+    cannot :read, ChatMessage do |chat_message|
+      !chat_message.recipient_id.eql? user.id
+    end
     # Define abilities for the passed in user here. For example:
     #
     #   user ||= User.new # guest user (not logged in)

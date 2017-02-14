@@ -17,4 +17,33 @@ class ChatMessagesController < ApplicationController
            page: page,
            page_size: page_size
   end
+
+  def create
+    @chat_message = ChatMessage.new create_params
+    @chat_message.author_id = current_user.id
+    if @chat_message.save
+      render json: @chat_message,
+             serializer: ChatMessageSerializer,
+             status: :created
+    else
+      render json: @chat_messages.errors,
+             status: :bad_request
+    end
+  end
+
+  def read
+    @chat_messages = ChatMessage.thread(@chat_message.author_id, @chat_message.recipient_id)
+    @chat_messages.where("created_at <= '#{@chat_message.created_at}' AND readed_at = NULL")
+
+    if @chat_messages.update(readed_at: DateTime.now)
+      render status: :no_content
+    else
+      render status: :bad_request
+    end
+  end
+
+  private
+  def create_params
+    params.permit(:recipient_id, :message)
+  end
 end

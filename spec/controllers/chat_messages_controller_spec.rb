@@ -114,10 +114,10 @@ RSpec.describe ChatMessagesController, type: :controller do
       message.save
 
       put :read, params: message.attributes
-      parsed_response = JSON.parse(response.body)
+      message.reload
 
       expect(response).to have_http_status :success
-      expect(parsed_response['readed_at']).to_not be nil
+      expect(message.readed_at).to_not be nil
     end
 
     it 'should set older messages as a read' do
