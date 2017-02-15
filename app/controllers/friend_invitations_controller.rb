@@ -5,7 +5,8 @@ class FriendInvitationsController < ApplicationController
   def index
     setup_pagination(page: params[:page], page_size: params[:page_size])
     setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: FriendInvitation)
-    collection = search_collection(@friend_invitations, search_field: params[:search_field], search_value: params[:search_value])
+    collection = @friend_invitations.page(@page).per(@per_page)
+    collection = search_collection(collection, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
            each_serializer: FriendInvitationSerializer,
@@ -20,7 +21,8 @@ class FriendInvitationsController < ApplicationController
 
     setup_pagination(page: params[:page], page_size: params[:page_size])
     setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: FriendInvitation)
-    collection = search_collection(@friend_invitations, search_field: params[:search_field], search_value: params[:search_value])
+    collection = @friend_invitations.page(@page).per(@per_page)
+    collection = search_collection(collection, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
            each_serializer: FriendInvitationSerializer,
@@ -35,7 +37,8 @@ class FriendInvitationsController < ApplicationController
 
     setup_pagination(page: params[:page], page_size: params[:page_size])
     setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: FriendInvitation)
-    collection = search_collection(@friend_invitations, search_field: params[:search_field], search_value: params[:search_value])
+    collection = @friend_invitations.page(@page).per(@per_page)
+    collection = search_collection(collection, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
            each_serializer: FriendInvitationSerializer,
