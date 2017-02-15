@@ -31,20 +31,23 @@ NOTIFICATION_SNAP_VIEWED = 'snap_viewed'
 NOTIFICATION_SNAP_REPLAYED  = 'snap_replayed'
 NOTIFICATION_SNAP_SCREENSHOT_MADE = 'snap_screenshot_made'
 
-MESSAGE_SENT_STREAM = 'message_sent'
-MESSAGE_TYPING_STREAM = 'message_typing'
-MESSAGE_READED_STREAM = 'message_readed'
+NOTIFICATION_MESSAGE_RECEIVED = 'message_received'
+NOTIFICATION_MESSAGE_READ = 'message_read'
 
-def message_sent_stream(id)
-  MESSAGE_SENT_STREAM + "\##{id}"
+STREAM_MESSAGE_SENT = 'message_sent'
+STREAM_MESSAGE_TYPING = 'message_typing'
+STREAM_MESSAGE_READED = 'message_readed'
+
+def stream_message_sent(id)
+  STREAM_MESSAGE_SENT + "\##{id}"
 end
 
-def message_typing_stream(id)
-  MESSAGE_TYPING_STREAM + "\##{id}"
+def stream_message_typing(id)
+  STREAM_MESSAGE_TYPING + "\##{id}"
 end
 
-def message_readed_stream(id)
-  MESSAGE_READED_STREAM + "\##{id}"
+def stream_message_readed(id)
+  STREAM_MESSAGE_READED + "\##{id}"
 end
 
 MESSAGE_AUTHOR_ID = 'author_id'

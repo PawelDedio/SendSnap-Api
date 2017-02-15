@@ -25,6 +25,7 @@ class ChatMessagesController < ApplicationController
       render json: @chat_message,
              serializer: ChatMessageSerializer,
              status: :created
+      ChatMessageReceivedJob.perform_now @chat_message
     else
       render json: @chat_messages.errors,
              status: :bad_request
@@ -37,6 +38,7 @@ class ChatMessagesController < ApplicationController
 
     if @chat_messages.update(readed_at: DateTime.now)
       render status: :no_content
+      ChatMessageReadJob.perform_now @chat_message
     else
       render status: :bad_request
     end
