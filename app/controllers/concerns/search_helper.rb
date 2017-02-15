@@ -6,7 +6,6 @@ module SearchHelper extend ActiveSupport::Concern
     @search_field = options[:search_field]
     @search_value = options[:search_value]
 
-
     collection = collection.where(@search_field => @search_value) if search_params_valid? collection
     collection
   end

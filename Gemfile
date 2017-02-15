@@ -32,6 +32,9 @@ gem 'active_model_serializers', '0.10.3'
 #file uploader https://github.com/carrierwaveuploader/carrierwave/releases
 gem 'carrierwave', '~> 1.0'
 
+#https://github.com/mislav/will_paginate
+gem 'kaminari', '~> 0.17.0'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
