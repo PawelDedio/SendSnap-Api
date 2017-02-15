@@ -28,7 +28,7 @@ class Snap < ApplicationRecord
   validates :file, presence: true
   validates :file_type, presence: true, inclusion: {in: [SNAP_TYPE_PHOTO, SNAP_TYPE_VIDEO]}
   validates :duration, presence: true, numericality: true
-  validates :recipient_ids, presence: true
+  validates :recipient_ids, presence: true, snap_recipients: true
 
 
   def all_errors

@@ -22,7 +22,7 @@ class FriendInvitation < ApplicationRecord
   belongs_to :recipient, class_name: 'User'
 
   validates :author_id, presence: true, user: true
-  validates :recipient_id, presence: true, user: true, recipient_id: true,
+  validates :recipient_id, presence: true, user: true, invitation_recipient_id: true,
             uniqueness: {scope: :author_id, conditions:  -> {where(canceled_at: nil, rejected_at: nil)}}
 
   default_scope {where(accepted_at: nil, rejected_at: nil, canceled_at: nil)}
