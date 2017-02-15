@@ -70,6 +70,16 @@ RSpec.describe Snap, type: :model do
   end
 
   describe 'recipient_ids' do
+    it 'should validate presence' do
+      should validate_presence_of(:recipient_ids)
+    end
 
+    it 'should not allow to add recipient which is not a friend' do
+      snap = build :photo_snap
+      snap.recipient_ids = [(create :user).id]
+      res = snap.save
+
+      expect(res).to be false
+    end
   end
 end

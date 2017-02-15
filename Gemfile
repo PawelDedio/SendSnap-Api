@@ -37,6 +37,9 @@ gem 'rpush', '~> 2.7.0'
 
 gem 'net-http-persistent', '2.9.4'
 
+#https://github.com/mislav/will_paginate
+gem 'kaminari', '~> 0.17.0'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri

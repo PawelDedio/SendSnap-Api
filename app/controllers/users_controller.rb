@@ -4,8 +4,9 @@ class UsersController < ApplicationController
 
   def index
     setup_pagination(page: params[:page], page_size: params[:page_size])
-    setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order])
-    collection = search_collection(@users, search_field: params[:search_field], search_value: params[:search_value])
+    setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: User)
+    collection = @users.page(@page).per(@per_page)
+    collection = search_collection(collection, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
            each_serializer: UserSerializer,
