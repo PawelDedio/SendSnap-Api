@@ -47,6 +47,7 @@ class User < ApplicationRecord
   def sign_in
     set_auth_token
     extend_token_time
+    self.save
   end
 
   def sign_out

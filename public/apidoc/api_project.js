@@ -1,0 +1,1 @@
+define({  "name": "SendSnap API",  "version": "0.1.0",  "description": "Documentation for SendSnap API",  "url": "http://localhost:3000",  "sampleUrl": false,  "defaultVersion": "0.0.0",  "apidoc": "0.3.0",  "generator": {    "name": "apidoc",    "time": "2017-03-06T13:37:23.221Z",    "url": "http://apidocjs.com",    "version": "0.17.5"  }});

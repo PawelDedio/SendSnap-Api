@@ -2,6 +2,16 @@ class UsersController < ApplicationController
   before_action :authenticate_user, except: :create
   load_and_authorize_resource class: 'User', except: :create
 
+=begin
+  @api {get} /users Get users list
+  @apiName getUsers
+  @apiGroup user
+  @apiPermission admin
+  @apiUse AuthorizationHeaders
+  @apiUse CollectionParams
+  @apiUse UserList
+  @apiUse ErrorUnauthorized
+=end
   def index
     setup_pagination(page: params[:page], page_size: params[:page_size])
     setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: User)
@@ -17,11 +27,30 @@ class UsersController < ApplicationController
            page_size: page_size
   end
 
+=begin
+  @api {get} /users/:id Get user details
+  @apiName getUsersId
+  @apiGroup user
+  @apiPermission user
+  @apiParam {uuid} id User id
+  @apiUse AuthorizationHeaders
+  @apiUse User
+  @apiUse ErrorUnauthorized
+=end
   def show
     render json: @user,
            serializer: UserSerializer
   end
 
+=begin
+  @api {post} /users Create user account
+  @apiName postUsers
+  @apiGroup user
+  @apiPermission user
+  @apiUse UserCreateParams
+  @apiUse UserForSession
+  @apiUse ErrorBadRequest
+=end
   def create
     @user = User.new create_params
 
@@ -35,6 +64,18 @@ class UsersController < ApplicationController
     end
   end
 
+=begin
+  @api {put} /users/:id Update user account
+  @apiName putUsersId
+  @apiGroup user
+  @apiPermission user
+  @apiParam {uuid} id User id
+  @apiUse UserUpdateParams
+  @apiUse AuthorizationHeaders
+  @apiUse User
+  @apiUse ErrorBadRequest
+  @apiUse ErrorUnauthorized
+=end
   def update
     @user.assign_attributes update_params
 
@@ -65,11 +106,27 @@ class UsersController < ApplicationController
   end
 
 
+=begin
+  @apiDefine UserCreateParams
+  @apiParam {string{3..15}} name User name
+  @apiParam {string{3..30}} [display_name] User display name
+  @apiParam {string} email User email
+  @apiParam {boolean} terms_accepted If user accepted terms and conditions
+  @apiParam {string} password User password
+  @apiParam {string} password_confirmation User password confirmation
+=end
   private
   def create_params
     params.permit(:name, :display_name, :email, :terms_accepted, :password, :password_confirmation)
   end
 
+=begin
+  @apiDefine UserUpdateParams
+  @apiParam {string{3..15}} name User name, only for admin role
+  @apiParam {string{3..30}} [display_name] User display name
+  @apiParam {string} email User email, only for admin role
+  @apiParam {boolean} terms_accepted If user accepted terms and conditions, only for admin role
+=end
   def update_params
     update_params = params.permit(:display_name) if current_user.role.eql? USER_ROLE_USER
     update_params = params.permit(:name, :display_name, :email, :terms_accepted) if current_user.role.eql? USER_ROLE_ADMIN
