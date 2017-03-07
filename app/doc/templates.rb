@@ -57,12 +57,12 @@
 
 =begin
   @apiDefine CollectionParams
-  @apiParam [page] number page number
-  @apiParam [page_size] number page size
-  @apiParam [search_field] string name of field for searching
-  @apiParam [search_value] string search value
-  @apiParam [sort_by] string name of field for sorting
-  @apiParam [sort_order=asc, desc] string search order
+  @apiParam {number} [page] page number
+  @apiParam {number} [page_size] number page size
+  @apiParam {string} [search_field] name of field for searching
+  @apiParam {string} [search_value] search value
+  @apiParam {string} [sort_by] name of field for sorting
+  @apiParam {string=asc, desc} [sort_order] search order
 =end
 
 
@@ -285,6 +285,21 @@
             "readed_at": null,
             "created_at": "2017-03-07T12:32:04.367Z",
             "updated_at": "2017-03-07T12:32:04.367Z"
+          }
+        ]
+      }
+=end
+
+=begin
+  @apiDefine FriendList
+  @apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+      {
+        "collection": [
+          {
+            "id": "1739f0be-971a-4874-b6a7-2de699abae04",
+            "name": "admin",
+            "display_name": "admin"
           }
         ]
       }
