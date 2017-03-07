@@ -40,6 +40,12 @@
     HTTP/1.1 400 Bad Request
 =end
 
+=begin
+  @apiDefine ErrorForbidden
+  @apiErrorExample {json} Error-Response:
+    HTTP/1.1 403 Forbidden
+=end
+
 
 #Generic Params and Headers
 =begin
@@ -56,7 +62,7 @@
   @apiParam [search_field] string name of field for searching
   @apiParam [search_value] string search value
   @apiParam [sort_by] string name of field for sorting
-  @apiParam [order=asc, desc] string search order
+  @apiParam [sort_order=asc, desc] string search order
 =end
 
 
@@ -155,6 +161,130 @@
             "canceled_at": null,
             "created_at": "2017-03-07T07:18:17.231Z",
             "updated_at": "2017-03-07T07:18:17.231Z"
+          }
+        ]
+      }
+=end
+
+=begin
+  @apiDefine AuthorSnap
+  @apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+      {
+        "id": "56f1cb33-d853-45e9-942a-ddb384cfd56a",
+        "user_id": "1739f0be-971a-4874-b6a7-2de699abae04",
+        "file": {
+          "url": "/uploads/snap/file/56f1cb33-d853-45e9-942a-ddb384cfd56a/Zrzut_ekranu_2016-12-21_o_20.03.02.png"
+        },
+        "file_type": "photo",
+        "duration": 10,
+        "created_at": "2017-03-07T09:51:56.582Z",
+        "recipients": [
+          {
+            "id": "dc7bb84e-94f0-4ebe-84a0-1d16c2bad206",
+            "name": "user",
+            "display_name": "user",
+            "email": "tt@t.com",
+            "role": "user",
+            "created_at": "2017-01-07T15:22:03.101Z",
+            "updated_at": "2017-01-07T15:22:03.101Z"
+          }
+        ],
+        "updated_at": "2017-03-07T09:51:56.582Z"
+      }
+=end
+
+=begin
+  @apiDefine RecipientSnap
+  @apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+      {
+        "id": "56f1cb33-d853-45e9-942a-ddb384cfd56a",
+        "user_id": "1739f0be-971a-4874-b6a7-2de699abae04",
+        "file": {
+          "url": "/uploads/snap/file/56f1cb33-d853-45e9-942a-ddb384cfd56a/Zrzut_ekranu_2016-12-21_o_20.03.02.png"
+        },
+        "file_type": "photo",
+        "duration": 10,
+        "view_count": 0,
+        "created_at": "2017-03-07T09:51:56.582Z",
+        "updated_at": "2017-03-07T09:51:56.582Z"
+      }
+=end
+
+=begin
+  @apiDefine SnapList
+  @apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+      {
+        "collection": [
+          {
+            "id": "56f1cb33-d853-45e9-942a-ddb384cfd56a",
+            "user_id": "1739f0be-971a-4874-b6a7-2de699abae04",
+            "file": {
+              "url": "/uploads/snap/file/56f1cb33-d853-45e9-942a-ddb384cfd56a/Zrzut_ekranu_2016-12-21_o_20.03.02.png"
+            },
+            "file_type": "photo",
+            "duration": 10,
+            "view_count": 0,
+            "created_at": "2017-03-07T09:51:56.582Z",
+            "updated_at": "2017-03-07T09:51:56.582Z"
+          },
+          {
+            "id": "4125a087-097f-4c83-b9ee-03b580b133a5",
+            "user_id": "dc7bb84e-94f0-4ebe-84a0-1d16c2bad206",
+            "file": {
+              "url": "/uploads/snap/file/4125a087-097f-4c83-b9ee-03b580b133a5/Zrzut_ekranu_2017-01-03_o_09.08.13.png"
+            },
+            "file_type": "photo",
+            "duration": 10,
+            "created_at": "2017-03-07T09:56:17.587Z",
+            "recipients": [
+              {
+                "id": "1739f0be-971a-4874-b6a7-2de699abae04",
+                "name": "admin",
+                "display_name": "admin",
+                "email": "t@t.com",
+                "role": "admin",
+                "created_at": "2016-12-29T07:30:04.270Z",
+                "updated_at": "2017-03-06T13:13:39.237Z"
+              }
+            ],
+            "updated_at": "2017-03-07T09:56:17.587Z"
+          }
+        ]
+      }
+=end
+
+=begin
+  @apiDefine ChatMessage
+  @apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+      {
+        "id": "5881f20b-e0cf-445a-91e7-46e20d3a41d8",
+        "message": "test message",
+        "author_id": "dc7bb84e-94f0-4ebe-84a0-1d16c2bad206",
+        "recipient_id": "1739f0be-971a-4874-b6a7-2de699abae04",
+        "readed_at": null,
+        "created_at": "2017-03-07T12:32:04.367Z",
+        "updated_at": "2017-03-07T12:32:04.367Z"
+      }
+=end
+
+=begin
+  @apiDefine ChatMessageList
+  @apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+      {
+        "collection": [
+          {
+            "id": "5881f20b-e0cf-445a-91e7-46e20d3a41d8",
+            "message": "test message",
+            "author_id": "dc7bb84e-94f0-4ebe-84a0-1d16c2bad206",
+            "recipient_id": "1739f0be-971a-4874-b6a7-2de699abae04",
+            "readed_at": null,
+            "created_at": "2017-03-07T12:32:04.367Z",
+            "updated_at": "2017-03-07T12:32:04.367Z"
           }
         ]
       }

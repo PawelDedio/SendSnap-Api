@@ -9,6 +9,7 @@ class FriendInvitationsController < ApplicationController
   @apiGroup friend invitations
   @apiPermission admin
   @apiUse AuthorizationHeaders
+  @apiUse CollectionParams
   @apiUse FriendInvitationList
   @apiUse ErrorUnauthorized
 =end
@@ -16,6 +17,7 @@ class FriendInvitationsController < ApplicationController
     setup_pagination(page: params[:page], page_size: params[:page_size])
     setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: FriendInvitation)
     collection = @friend_invitations.page(@page).per(@per_page)
+    collection = collection.order(@sort_by => @sort_order)
     collection = search_collection(collection, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
@@ -33,6 +35,7 @@ class FriendInvitationsController < ApplicationController
   @apiGroup friend invitations
   @apiPermission user
   @apiUse AuthorizationHeaders
+  @apiUse CollectionParams
   @apiUse FriendInvitationList
   @apiUse ErrorUnauthorized
 =end
@@ -42,6 +45,7 @@ class FriendInvitationsController < ApplicationController
     setup_pagination(page: params[:page], page_size: params[:page_size])
     setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: FriendInvitation)
     collection = @friend_invitations.page(@page).per(@per_page)
+    collection = collection.order(@sort_by => @sort_order)
     collection = search_collection(collection, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
@@ -59,6 +63,7 @@ class FriendInvitationsController < ApplicationController
   @apiGroup friend invitations
   @apiPermission user
   @apiUse AuthorizationHeaders
+  @apiUse CollectionParams
   @apiUse FriendInvitationList
   @apiUse ErrorUnauthorized
 =end
@@ -68,6 +73,7 @@ class FriendInvitationsController < ApplicationController
     setup_pagination(page: params[:page], page_size: params[:page_size])
     setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: FriendInvitation)
     collection = @friend_invitations.page(@page).per(@per_page)
+    collection = collection.order(@sort_by => @sort_order)
     collection = search_collection(collection, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,

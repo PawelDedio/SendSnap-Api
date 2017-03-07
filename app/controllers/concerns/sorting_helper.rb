@@ -2,14 +2,14 @@ module SortingHelper extend ActiveSupport::Concern
 
   def setup_sorting(options = {})
     sort_by = options[:sort_by].try(:to_sym)
-    order = options[:order].try(:to_sym)
+    order = options[:sort_order].try(:to_sym)
 
     sort_by = DEFAULT_SORT_BY if sort_by.nil?
     order = DEFAULT_SORT_ORDER if order.nil?
 
-    unless sort_params_valid?(options[:model], sort_by, order)
+    if sort_params_valid?(options[:model], sort_by, order)
       @sort_by = sort_by
-      @order = order
+      @sort_order = order
     end
   end
 
