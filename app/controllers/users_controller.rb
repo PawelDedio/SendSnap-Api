@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   @api {get} /users Get users list
   @apiName getUsers
   @apiGroup user
-  @apiPermission admin
+  @apiPermission user
   @apiUse AuthorizationHeaders
   @apiUse CollectionParams
   @apiUse UserList
