@@ -19,12 +19,13 @@ class SnapsController < ApplicationController
     collection = search_collection(collection, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
-           each_serializer: AuthorSnapSerializer,
+           each_serializer: SnapForCollectionSerializer,
            root: COLLECTION_LABEL,
            adapter: :json,
            count: collection.size,
            page: page,
-           page_size: page_size
+           page_size: page_size,
+           current_user_id: current_user.id
   end
 
   def show
