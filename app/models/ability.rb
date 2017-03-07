@@ -33,10 +33,13 @@ class Ability
       can :manage, Snap do |snap|
         snap.recipient_ids.include?(user.id)
       end
-      cannot :index, Snap
       cannot :view, Snap do |snap|
         !snap.recipient_ids.include? user.id
       end
+    end
+
+    can :read, Snap do |snap|
+      snap.recipient_ids.include?(user.id) || snap.user_id.eql?(user.id)
     end
 
     cannot :image, Snap do |snap|

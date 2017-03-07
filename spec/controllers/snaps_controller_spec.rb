@@ -33,11 +33,17 @@ RSpec.describe SnapsController, type: :controller do
   end
 
   describe 'get #index' do
-    it 'should print all snaps for admin role' do
-      sign_in_admin
+    it 'should print snaps where admin is author or recipient' do
+      admin = sign_in_admin
 
-      first = create :photo_snap
-      second = create :photo_snap
+      first = build :photo_snap
+      first.user_id = admin.id
+      first.save
+      second = build :photo_snap
+      second.user.friend_ids = admin.id
+      second.recipient_ids = [admin.id]
+      second.save
+      third = create :photo_snap
 
       get :index
       parsed_response = JSON.parse(response.body)
@@ -46,12 +52,23 @@ RSpec.describe SnapsController, type: :controller do
       expect(parsed_response[COLLECTION_LABEL].count.to_i).to eql 2
     end
 
-    it 'should not allow for not admin role' do
-      sign_in_user
+    it 'should print snaps where user is author or recipient' do
+      user = sign_in_user
+
+      first = build :photo_snap
+      first.user_id = user.id
+      first.save
+      second = build :photo_snap
+      second.user.friend_ids = user.id
+      second.recipient_ids = [user.id]
+      second.save
+      third = create :photo_snap
 
       get :index
+      parsed_response = JSON.parse(response.body)
 
-      expect(response).to have_http_status :forbidden
+      expect(response).to have_http_status :success
+      expect(parsed_response[COLLECTION_LABEL].count.to_i).to eql 2
     end
 
     it 'should not allow for unauthorized user' do
