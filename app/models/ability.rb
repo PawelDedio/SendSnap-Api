@@ -11,7 +11,6 @@ class Ability
       end
     else
       can :manage, User, id: user.id
-      cannot :index, User
 
       can :manage, FriendInvitation, author_id: user.id
       can :manage, FriendInvitation, recipient_id: user.id

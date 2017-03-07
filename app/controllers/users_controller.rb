@@ -20,7 +20,7 @@ class UsersController < ApplicationController
     collection = search_collection(collection, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
-           each_serializer: UserSerializer,
+           each_serializer: UserFriendSerializer,
            root: COLLECTION_LABEL,
            adapter: :json,
            count: collection.size,

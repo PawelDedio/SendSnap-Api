@@ -39,12 +39,12 @@ RSpec.describe UsersController, type: :controller do
       expect(parsed_response[COLLECTION_LABEL].count.to_i).to eql 2
     end
 
-    it 'should not allow access for not admin role' do
+    it 'should allow access for user role' do
       user = sign_in_user
 
       get :index
 
-      expect(response).to have_http_status :forbidden
+      expect(response).to have_http_status :success
     end
 
     it 'should not allow access for not authorized user' do
