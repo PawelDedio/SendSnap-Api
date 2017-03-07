@@ -67,6 +67,4 @@ class Snap < ApplicationRecord
   def view_count(user_id)
     self.user_snaps.find_by_user_id(user_id).view_count
   end
-
-  #TODO: Custom url for image view and validation of view_count
 end

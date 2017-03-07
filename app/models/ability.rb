@@ -33,7 +33,6 @@ class Ability
       can :manage, Snap do |snap|
         snap.recipient_ids.include?(user.id)
       end
-      cannot :index, Snap
       cannot :view, Snap do |snap|
         !snap.recipient_ids.include? user.id
       end
@@ -41,6 +40,10 @@ class Ability
       can :manage, ChatMessage do |message|
         message.author_id.eql?(user.id) || message.recipient_id.eql?(user.id)
       end
+    end
+
+    can :read, Snap do |snap|
+      snap.recipient_ids.include?(user.id) || snap.user_id.eql?(user.id)
     end
 
     cannot :image, Snap do |snap|

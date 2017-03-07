@@ -15,7 +15,7 @@ class SnapsController < ApplicationController
   def index
     setup_pagination(page: params[:page], page_size: params[:page_size])
     setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: Snap)
-    collection = @snaps.page(@page).per(@per_page)
+    collection = all_snaps.page(@page).per(@per_page)
     collection = search_collection(collection, search_field: params[:search_field], search_value: params[:search_value])
     render json: collection,
            serializer: CollectionSerializer,
@@ -84,6 +84,9 @@ class SnapsController < ApplicationController
 
 
   private
+  def all_snaps
+    Snap.eager_load(:recipients).where("user_snaps.user_id = '#{current_user.id}' OR snaps.user_id = '#{current_user.id}'")
+  end
   def create_params
     params.permit(:file, :file_type, :duration, recipient_ids: [])
   end
