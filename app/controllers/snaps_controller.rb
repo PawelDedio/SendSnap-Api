@@ -2,6 +2,16 @@ class SnapsController < ApplicationController
   before_action :authenticate_user
   load_and_authorize_resource class: 'Snap', except: :create
 
+=begin
+  @api {get} /snaps Get all invitations
+  @apiDescription This method gives all invitations from all users
+  @apiName getFriendInvitations
+  @apiGroup friend invitations
+  @apiPermission admin
+  @apiUse AuthorizationHeaders
+  @apiUse FriendInvitationList
+  @apiUse ErrorUnauthorized
+=end
   def index
     setup_pagination(page: params[:page], page_size: params[:page_size])
     setup_sorting(sort_by: params[:sort_by], sort_order: params[:sort_order], model: Snap)

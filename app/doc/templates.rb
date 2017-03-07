@@ -5,6 +5,12 @@
     HTTP/1.1 200 OK
 =end
 
+=begin
+  @apiDefine SuccessNoContent
+  @apiErrorExample {json} Success-Response:
+    HTTP/1.1 204 No Content
+=end
+
 
 #Generic errors
 =begin
@@ -14,7 +20,7 @@
 =end
 
 =begin
-  @apiDefine ErrorBadRequest
+  @apiDefine ErrorBadParams
   @apiErrorExample {json} Error-Response:
     HTTP/1.1  400 Bad Request
       {
@@ -26,6 +32,12 @@
           "has already been taken"
         ]
       }
+=end
+
+=begin
+  @apiDefine ErrorBadRequest
+  @apiErrorExample {json} Error-Response:
+    HTTP/1.1 400 Bad Request
 =end
 
 
@@ -107,6 +119,42 @@
             "role": "admin",
             "created_at": "2016-12-29T07:30:04.270Z",
             "updated_at": "2017-03-06T13:13:39.237Z"
+          }
+        ]
+      }
+=end
+
+=begin
+  @apiDefine FriendInvitation
+  @apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+      {
+        "id": "3b9973f1-f37d-4497-bf82-8b52c8eea69b",
+        "author_id": "dc7bb84e-94f0-4ebe-84a0-1d16c2bad206",
+        "recipient_id": "1739f0be-971a-4874-b6a7-2de699abae04",
+        "accepted_at": null,
+        "rejected_at": null,
+        "canceled_at": null,
+        "created_at": "2017-03-07T07:18:17.231Z",
+        "updated_at": "2017-03-07T07:18:17.231Z"
+      }
+=end
+
+=begin
+  @apiDefine FriendInvitationList
+  @apiSuccessExample {json} Success-Response:
+    HTTP/1.1 200 OK
+      {
+        "collection": [
+          {
+            "id": "3b9973f1-f37d-4497-bf82-8b52c8eea69b",
+            "author_id": "dc7bb84e-94f0-4ebe-84a0-1d16c2bad206",
+            "recipient_id": "1739f0be-971a-4874-b6a7-2de699abae04",
+            "accepted_at": null,
+            "rejected_at": null,
+            "canceled_at": null,
+            "created_at": "2017-03-07T07:18:17.231Z",
+            "updated_at": "2017-03-07T07:18:17.231Z"
           }
         ]
       }

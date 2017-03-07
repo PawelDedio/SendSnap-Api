@@ -19,6 +19,11 @@ RSpec.describe UsersController, type: :controller do
       uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
       should route(:delete, "users/#{uuid}").to(action: :destroy, id: uuid)
     }
+
+    it {
+      uuid = '62342cab-3a74-4c7b-a38c-90dfea646817'
+      should route(:put, "users/#{uuid}/block").to(action: :block, id: uuid)
+    }
   end
 
   describe 'GET #index' do

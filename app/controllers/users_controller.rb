@@ -49,7 +49,7 @@ class UsersController < ApplicationController
   @apiPermission user
   @apiUse UserCreateParams
   @apiUse UserForSession
-  @apiUse ErrorBadRequest
+  @apiUse ErrorBadParams
 =end
   def create
     @user = User.new create_params
@@ -69,11 +69,10 @@ class UsersController < ApplicationController
   @apiName putUsersId
   @apiGroup user
   @apiPermission user
-  @apiParam {uuid} id User id
   @apiUse UserUpdateParams
   @apiUse AuthorizationHeaders
   @apiUse User
-  @apiUse ErrorBadRequest
+  @apiUse ErrorBadParams
   @apiUse ErrorUnauthorized
 =end
   def update
@@ -89,25 +88,50 @@ class UsersController < ApplicationController
     end
   end
 
+=begin
+  @api {delete} /users/:id Delete user account
+  @apiName deleteUsersId
+  @apiGroup user
+  @apiPermission admin
+  @apiParam {uuid} id User id
+  @apiUse AuthorizationHeaders
+  @apiUse SuccessNoContent
+  @apiUse ErrorBadParams
+  @apiUse ErrorUnauthorized
+=end
   def destroy
     if @user.safe_delete
       render status: :no_content
     else
-      render json: @user.errors
+      render status: :bad_request,
+             json: @user.errors
     end
   end
 
+=begin
+  @api {put} /users/:id/block Block user account
+  @apiName putUsersIdBlock
+  @apiGroup user
+  @apiPermission admin
+  @apiParam {uuid} id User id
+  @apiUse AuthorizationHeaders
+  @apiUse SuccessNoContent
+  @apiUse ErrorBadParams
+  @apiUse ErrorUnauthorized
+=end
   def block
     if @user.block
       render status: :no_content
     else
-      render json: @user.errors
+      render status: :bad_request,
+             json: @user.errors
     end
   end
 
 
 =begin
   @apiDefine UserCreateParams
+  @apiParam {uuid} id User id
   @apiParam {string{3..15}} name User name
   @apiParam {string{3..30}} [display_name] User display name
   @apiParam {string} email User email

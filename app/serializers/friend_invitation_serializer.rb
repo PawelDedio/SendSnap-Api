@@ -4,6 +4,7 @@ class FriendInvitationSerializer < ActiveModel::Serializer
              :recipient_id,
              :accepted_at,
              :rejected_at,
+             :canceled_at,
              :created_at,
              :updated_at
 end

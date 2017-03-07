@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   post 'session/create' => 'sessions#create'
   delete 'session/destroy' => 'sessions#destroy'
 
-  put 'users/block/:id' => 'users#block'
+  put 'users/:id/block' => 'users#block'
   resources :users
 
   get 'friend_invitations/from_me' => 'friend_invitations#from_me'
