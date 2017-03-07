@@ -71,6 +71,26 @@ RSpec.describe SnapsController, type: :controller do
       expect(parsed_response[COLLECTION_LABEL].count.to_i).to eql 2
     end
 
+    it 'should set correct serializers' do
+      user = sign_in_user
+
+      first = build :photo_snap
+      first.user_id = user.id
+      first.save
+      second = build :photo_snap
+      second.user.friend_ids = user.id
+      second.recipient_ids = [user.id]
+      second.save
+      third = create :photo_snap
+
+      get :index
+      parsed_response = JSON.parse(response.body)
+
+      expect(response).to have_http_status :success
+      expect(parsed_response[COLLECTION_LABEL][0]['recipients']).to_not be nil
+      expect(parsed_response[COLLECTION_LABEL][1]['recipients']).to be nil
+    end
+
     it 'should not allow for unauthorized user' do
       get :index
 
