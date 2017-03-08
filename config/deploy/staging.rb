@@ -52,3 +52,5 @@
  server "40.71.208.249",
    user: "deploy",
    roles: %w{app db web}
+
+set :rails_env, 'staging'
