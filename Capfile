@@ -39,5 +39,9 @@ require "capistrano/bundler"
 set :rvm_type, :user
 set :rvm_ruby_version, '2.4.0'
 
+set :default_env, {
+    'PATH' => "/opt/ruby-enterprise/bin/:$PATH"
+}
+
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
 Dir.glob("lib/capistrano/tasks/*.rake").each { |r| import r }

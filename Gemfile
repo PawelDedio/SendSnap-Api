@@ -27,7 +27,7 @@ gem 'cancancan', '~> 1.10'
 #email validator https://github.com/balexand/email_validator
 gem 'email_validator', '~> 1.6.0'
 
-gem 'active_model_serializers', '0.10.3'
+gem 'active_model_serializers', '0.10.5'
 
 #file uploader https://github.com/carrierwaveuploader/carrierwave/releases
 gem 'carrierwave', '~> 1.0'
@@ -45,6 +45,9 @@ gem 'capistrano', '~> 3.7', '>= 3.7.1'
 gem 'capistrano-rails', '~> 1.2'
 gem 'capistrano-passenger', '~> 0.2.0'
 gem 'capistrano-rvm'
+
+#json
+gem 'json', '~> 2.0.3'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
