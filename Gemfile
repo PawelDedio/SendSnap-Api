@@ -19,10 +19,10 @@ gem 'puma', '~> 3.0'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
-gem 'pg', '~> 0.18.2'
+gem 'pg', '~> 0.18.4'
 
 # permission manager https://github.com/CanCanCommunity/cancancan/
-gem 'cancancan', '~> 1.10'
+gem 'cancancan', '~> 1.16.0'
 
 #email validator https://github.com/balexand/email_validator
 gem 'email_validator', '~> 1.6.0'

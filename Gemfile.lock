@@ -214,7 +214,7 @@ DEPENDENCIES
   annotate (~> 2.7.1)
   bcrypt (~> 3.1.7)
   byebug
-  cancancan (~> 1.10)
+  cancancan (~> 1.16.0)
   capistrano (~> 3.7, >= 3.7.1)
   capistrano-passenger (~> 0.2.0)
   capistrano-rails (~> 1.2)
@@ -227,7 +227,7 @@ DEPENDENCIES
   kaminari (~> 0.17.0)
   listen (~> 3.0.5)
   net-http-persistent (= 2.9.4)
-  pg (~> 0.18.2)
+  pg (~> 0.18.4)
   puma (~> 3.0)
   rails (~> 5.0.0, >= 5.0.0.1)
   rpush (~> 2.7.0)
