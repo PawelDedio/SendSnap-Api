@@ -40,6 +40,12 @@ gem 'net-http-persistent', '2.9.4'
 #https://github.com/mislav/will_paginate
 gem 'kaminari', '~> 0.17.0'
 
+#deploy
+gem 'capistrano', '~> 3.7', '>= 3.7.1'
+gem 'capistrano-rails', '~> 1.2'
+gem 'capistrano-passenger', '~> 0.2.0'
+gem 'capistrano-rvm'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
