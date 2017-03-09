@@ -265,7 +265,7 @@
         "message": "test message",
         "author_id": "dc7bb84e-94f0-4ebe-84a0-1d16c2bad206",
         "recipient_id": "1739f0be-971a-4874-b6a7-2de699abae04",
-        "readed_at": null,
+        "read_at": null,
         "created_at": "2017-03-07T12:32:04.367Z",
         "updated_at": "2017-03-07T12:32:04.367Z"
       }
@@ -282,7 +282,7 @@
             "message": "test message",
             "author_id": "dc7bb84e-94f0-4ebe-84a0-1d16c2bad206",
             "recipient_id": "1739f0be-971a-4874-b6a7-2de699abae04",
-            "readed_at": null,
+            "read_at": null,
             "created_at": "2017-03-07T12:32:04.367Z",
             "updated_at": "2017-03-07T12:32:04.367Z"
           }
