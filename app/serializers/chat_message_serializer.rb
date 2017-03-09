@@ -3,7 +3,7 @@ class ChatMessageSerializer < ActiveModel::Serializer
              :message,
              :author_id,
              :recipient_id,
-             :readed_at,
+             :read_at,
              :created_at,
              :updated_at
 end
