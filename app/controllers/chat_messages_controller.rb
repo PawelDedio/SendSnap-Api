@@ -71,7 +71,7 @@ class ChatMessagesController < ApplicationController
     @chat_messages = ChatMessage.thread(@chat_message.author_id, @chat_message.recipient_id)
     @chat_messages.where("created_at <= '#{@chat_message.created_at}' AND readed_at = NULL")
 
-    if @chat_messages.update(readed_at: DateTime.now)
+    if @chat_messages.update(read_at: DateTime.now)
       render status: :no_content
       ChatMessageReadJob.perform_now @chat_message
     else
