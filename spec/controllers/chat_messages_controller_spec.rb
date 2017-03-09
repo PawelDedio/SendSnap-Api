@@ -27,7 +27,7 @@ RSpec.describe ChatMessagesController, type: :controller do
       first = build :chat_message
       first.author = author
       first.recipient_id = recipient.id
-      first.readed_at = DateTime.now
+      first.read_at = DateTime.now
       first.save
       second = build :chat_message
       second.author = author
@@ -117,7 +117,7 @@ RSpec.describe ChatMessagesController, type: :controller do
       message.reload
 
       expect(response).to have_http_status :success
-      expect(message.readed_at).to_not be nil
+      expect(message.read_at).to_not be nil
     end
 
     it 'should set older messages as a read' do
@@ -129,7 +129,7 @@ RSpec.describe ChatMessagesController, type: :controller do
       first = build :chat_message
       first.author_id = author.id
       first.recipient_id = recipient.id
-      first.readed_at = nil
+      first.read_at = nil
       first.save
 
       second = build :chat_message
@@ -140,7 +140,7 @@ RSpec.describe ChatMessagesController, type: :controller do
       put :read, params: second.attributes
       first.reload
 
-      expect(first.readed_at).to_not be nil
+      expect(first.read_at).to_not be nil
     end
 
     it 'should not allow to set message as a read when user is author' do

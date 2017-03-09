@@ -6,7 +6,7 @@
 #  author_id    :uuid             not null
 #  recipient_id :uuid             not null
 #  message      :text             not null
-#  readed_at    :datetime
+#  read_at      :datetime
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #
@@ -31,6 +31,6 @@ class ChatMessage < ApplicationRecord
   end
 
   def self.unread_thread(user_id, friend_id)
-    self.thread(user_id, friend_id).where(readed_at: nil)
+    self.thread(user_id, friend_id).where(read_at: nil)
   end
 end
