@@ -45,7 +45,7 @@ class SessionsController < ApplicationController
       render status: :unauthorized
     else
       @current_user.sign_out
-      render status: :ok
+      render status: :no_content
     end
   end
 
